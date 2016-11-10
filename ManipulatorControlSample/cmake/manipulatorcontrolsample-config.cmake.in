@@ -1,0 +1,54 @@
+# ManipulatorControlSample CMake config file
+#
+# This file sets the following variables:
+# ManipulatorControlSample_FOUND - Always TRUE.
+# ManipulatorControlSample_INCLUDE_DIRS - Directories containing the ManipulatorControlSample include files.
+# ManipulatorControlSample_IDL_DIRS - Directories containing the ManipulatorControlSample IDL files.
+# ManipulatorControlSample_LIBRARIES - Libraries needed to use ManipulatorControlSample.
+# ManipulatorControlSample_DEFINITIONS - Compiler flags for ManipulatorControlSample.
+# ManipulatorControlSample_VERSION - The version of ManipulatorControlSample found.
+# ManipulatorControlSample_VERSION_MAJOR - The major version of ManipulatorControlSample found.
+# ManipulatorControlSample_VERSION_MINOR - The minor version of ManipulatorControlSample found.
+# ManipulatorControlSample_VERSION_REVISION - The revision version of ManipulatorControlSample found.
+# ManipulatorControlSample_VERSION_CANDIDATE - The candidate version of ManipulatorControlSample found.
+
+message(STATUS "Found ManipulatorControlSample-@PROJECT_VERSION@")
+set(ManipulatorControlSample_FOUND TRUE)
+
+find_package(<dependency> REQUIRED)
+
+#set(ManipulatorControlSample_INCLUDE_DIRS
+#    "@CMAKE_INSTALL_PREFIX@/include/@PROJECT_NAME_LOWER@-@PROJECT_VERSION_MAJOR@"
+#    ${<dependency>_INCLUDE_DIRS}
+#    )
+#
+#set(ManipulatorControlSample_IDL_DIRS
+#    "@CMAKE_INSTALL_PREFIX@/include/@PROJECT_NAME_LOWER@-@PROJECT_VERSION_MAJOR@/idl")
+set(ManipulatorControlSample_INCLUDE_DIRS
+    "@CMAKE_INSTALL_PREFIX@/include/@CPACK_PACKAGE_FILE_NAME@"
+    ${<dependency>_INCLUDE_DIRS}
+    )
+set(ManipulatorControlSample_IDL_DIRS
+    "@CMAKE_INSTALL_PREFIX@/include/@CPACK_PACKAGE_FILE_NAME@/idl")
+
+
+if(WIN32)
+    set(ManipulatorControlSample_LIBRARIES
+        "@CMAKE_INSTALL_PREFIX@/@LIB_INSTALL_DIR@/@CMAKE_SHARED_LIBRARY_PREFIX@@PROJECT_NAME_LOWER@@CMAKE_STATIC_LIBRARY_SUFFIX@"
+        ${<dependency>_LIBRARIES}
+        )
+else(WIN32)
+    set(ManipulatorControlSample_LIBRARIES
+        "@CMAKE_INSTALL_PREFIX@/@LIB_INSTALL_DIR@/@CMAKE_SHARED_LIBRARY_PREFIX@@PROJECT_NAME_LOWER@@CMAKE_SHARED_LIBRARY_SUFFIX@"
+        ${<dependency>_LIBRARIES}
+        )
+endif(WIN32)
+
+set(ManipulatorControlSample_DEFINITIONS ${<dependency>_DEFINITIONS})
+
+set(ManipulatorControlSample_VERSION @PROJECT_VERSION@)
+set(ManipulatorControlSample_VERSION_MAJOR @PROJECT_VERSION_MAJOR@)
+set(ManipulatorControlSample_VERSION_MINOR @PROJECT_VERSION_MINOR@)
+set(ManipulatorControlSample_VERSION_REVISION @PROJECT_VERSION_REVISION@)
+set(ManipulatorControlSample_VERSION_CANDIDATE @PROJECT_VERSION_CANDIDATE@)
+

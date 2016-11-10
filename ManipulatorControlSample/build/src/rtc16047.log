@@ -1,0 +1,21 @@
+[0m[34mNov 01 09:14:49.266 INFO: manager: [0m1.1.2
+[0m[34mNov 01 09:14:49.266 INFO: manager: [0mCopyright (C) 2003-2014
+[0m[34mNov 01 09:14:49.266 INFO: manager: [0m  Noriaki Ando
+[0m[34mNov 01 09:14:49.266 INFO: manager: [0m  Intelligent Systems Research Institute, AIST
+[0m[34mNov 01 09:14:49.266 INFO: manager: [0mManager starting.
+[0m[34mNov 01 09:14:49.266 INFO: manager: [0mStarting local logging.
+[0m[33mNov 01 09:14:49.269 WARNING: NamingOnCorba: [0mNo endpoint for the CORBA naming service (localhost) was found.
+[0m[34mNov 01 09:14:49.269 INFO: NamingManager: [0mNameServer connection succeeded: corba/localhost
+[0m[34mNov 01 09:14:49.270 INFO: ManagerServant: [0mMaster manager not found
+[0m[33mNov 01 09:15:32.744 WARNING: SdoServiceAdmin: [0mNo available SDO service in the factory: 
+[0m[33mNov 01 09:15:32.744 WARNING: SdoServiceAdmin: [0mNo available SDO service in the factory: IDL:OpenRTM/ComponentObserver:1.0
+[0m[34mNov 01 09:15:37.426 INFO: ManipulatorCommonInterface_Common: [0minterface matched with old descriptor: port.JARA_ARM::ManipulatorCommonInterface_Common.ManipulatorCommonInterface_Common
+[0m[34mNov 01 09:15:42.232 INFO: ManipulatorCommonInterface_Middle: [0minterface matched with old descriptor: port.JARA_ARM::ManipulatorCommonInterface_Middle.ManipulatorCommonInterface_Middle
+[0m[35mNov 01 09:16:29.534 ERROR: periodic_ec: [0mThe component is not responding.
+[0m[35mNov 01 09:16:29.534 ERROR: periodic_ec: [0mThe component could not be deactivated.
+[0m[35mNov 01 09:16:32.204 ERROR: periodic_ec: [0mThe component is not responding.
+[0m[35mNov 01 09:16:32.204 ERROR: periodic_ec: [0mThe component could not be deactivated.
+[0m[35mNov 01 09:17:22.439 ERROR: periodic_ec: [0mThe component is not responding.
+[0m[35mNov 01 09:17:22.439 ERROR: periodic_ec: [0mThe component could not be deactivated.
+[0m[34mNov 01 09:17:33.824 INFO: ManipulatorCommonInterface_Common: [0minterface matched with old descriptor: port.JARA_ARM::ManipulatorCommonInterface_Common.ManipulatorCommonInterface_Common
+[0m[34mNov 01 09:17:33.825 INFO: ManipulatorCommonInterface_Middle: [0minterface matched with old descriptor: port.JARA_ARM::ManipulatorCommonInterface_Middle.ManipulatorCommonInterface_Middle

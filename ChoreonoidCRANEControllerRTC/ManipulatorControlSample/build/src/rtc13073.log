@@ -1,0 +1,35 @@
+[0m[34mNov 10 09:07:24.350 INFO: manager: [0m1.1.2
+[0m[34mNov 10 09:07:24.350 INFO: manager: [0mCopyright (C) 2003-2014
+[0m[34mNov 10 09:07:24.350 INFO: manager: [0m  Noriaki Ando
+[0m[34mNov 10 09:07:24.350 INFO: manager: [0m  Intelligent Systems Research Institute, AIST
+[0m[34mNov 10 09:07:24.350 INFO: manager: [0mManager starting.
+[0m[34mNov 10 09:07:24.350 INFO: manager: [0mStarting local logging.
+[0m[33mNov 10 09:07:24.354 WARNING: NamingOnCorba: [0mNo endpoint for the CORBA naming service (localhost) was found.
+[0m[34mNov 10 09:07:24.354 INFO: NamingManager: [0mNameServer connection succeeded: corba/localhost
+[0m[34mNov 10 09:07:24.355 INFO: ManagerServant: [0mMaster manager not found
+[0m[33mNov 10 09:07:28.706 WARNING: SdoServiceAdmin: [0mNo available SDO service in the factory: 
+[0m[33mNov 10 09:07:28.707 WARNING: SdoServiceAdmin: [0mNo available SDO service in the factory: IDL:OpenRTM/ComponentObserver:1.0
+[0m[34mNov 10 09:07:32.325 INFO: ManipulatorCommonInterface_Common: [0minterface matched with old descriptor: port.JARA_ARM::ManipulatorCommonInterface_Common.ManipulatorCommonInterface_Common
+[0m[34mNov 10 09:07:34.661 INFO: ManipulatorCommonInterface_Middle: [0minterface matched with old descriptor: port.JARA_ARM::ManipulatorCommonInterface_Middle.ManipulatorCommonInterface_Middle
+[0m[35mNov 10 09:08:16.065 ERROR: periodic_ec: [0mThe component is not responding.
+[0m[35mNov 10 09:08:16.065 ERROR: periodic_ec: [0mThe component could not be deactivated.
+[0m[34mNov 10 09:09:58.186 INFO: ManipulatorCommonInterface_Common: [0minterface matched with old descriptor: port.JARA_ARM::ManipulatorCommonInterface_Common.ManipulatorCommonInterface_Common
+[0m[34mNov 10 09:09:58.187 INFO: ManipulatorCommonInterface_Middle: [0minterface matched with old descriptor: port.JARA_ARM::ManipulatorCommonInterface_Middle.ManipulatorCommonInterface_Middle
+[0m[34mNov 10 09:10:14.023 INFO: ManipulatorCommonInterface_Common: [0minterface matched with old descriptor: port.JARA_ARM::ManipulatorCommonInterface_Common.ManipulatorCommonInterface_Common
+[0m[34mNov 10 09:10:16.614 INFO: ManipulatorCommonInterface_Middle: [0minterface matched with old descriptor: port.JARA_ARM::ManipulatorCommonInterface_Middle.ManipulatorCommonInterface_Middle
+[0m[35mNov 10 09:10:17.223 ERROR: periodic_ec: [0mThe component is not responding.
+[0m[35mNov 10 09:10:17.223 ERROR: periodic_ec: [0mThe component could not be deactivated.
+[0m[35mNov 10 09:11:09.769 ERROR: periodic_ec: [0mThe component is not responding.
+[0m[35mNov 10 09:11:09.769 ERROR: periodic_ec: [0mThe component could not be deactivated.
+[0m[34mNov 10 09:14:37.614 INFO: ManipulatorCommonInterface_Common: [0minterface matched with old descriptor: port.JARA_ARM::ManipulatorCommonInterface_Common.ManipulatorCommonInterface_Common
+[0m[34mNov 10 09:14:37.615 INFO: ManipulatorCommonInterface_Middle: [0minterface matched with old descriptor: port.JARA_ARM::ManipulatorCommonInterface_Middle.ManipulatorCommonInterface_Middle
+[0m[34mNov 10 09:14:52.547 INFO: ManipulatorCommonInterface_Common: [0minterface matched with old descriptor: port.JARA_ARM::ManipulatorCommonInterface_Common.ManipulatorCommonInterface_Common
+[0m[34mNov 10 09:14:54.933 INFO: ManipulatorCommonInterface_Middle: [0minterface matched with old descriptor: port.JARA_ARM::ManipulatorCommonInterface_Middle.ManipulatorCommonInterface_Middle
+[0m[35mNov 10 09:15:44.752 ERROR: periodic_ec: [0mThe component is not responding.
+[0m[35mNov 10 09:15:44.753 ERROR: periodic_ec: [0mThe component could not be deactivated.
+[0m[34mNov 10 09:19:04.688 INFO: ManipulatorCommonInterface_Common: [0minterface matched with old descriptor: port.JARA_ARM::ManipulatorCommonInterface_Common.ManipulatorCommonInterface_Common
+[0m[34mNov 10 09:19:04.688 INFO: ManipulatorCommonInterface_Middle: [0minterface matched with old descriptor: port.JARA_ARM::ManipulatorCommonInterface_Middle.ManipulatorCommonInterface_Middle
+[0m[35mNov 10 09:19:07.392 ERROR: periodic_ec: [0mThe component is not responding.
+[0m[35mNov 10 09:19:07.392 ERROR: periodic_ec: [0mThe component could not be deactivated.
+[0m[34mNov 10 09:19:17.117 INFO: ManipulatorCommonInterface_Common: [0minterface matched with old descriptor: port.JARA_ARM::ManipulatorCommonInterface_Common.ManipulatorCommonInterface_Common
+[0m[34mNov 10 09:19:22.844 INFO: ManipulatorCommonInterface_Common: [0minterface matched with old descriptor: port.JARA_ARM::ManipulatorCommonInterface_Common.ManipulatorCommonInterface_Common
