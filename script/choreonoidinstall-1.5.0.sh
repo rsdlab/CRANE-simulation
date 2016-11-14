@@ -1,5 +1,7 @@
 #!/bin/sh
 
+cd ../
+
 #コレオノイドホームページからダウンロード
 wget http://choreonoid.org/_downloads/choreonoid-1.5.0.zip
 unzip choreonoid-1.5.0.zip 

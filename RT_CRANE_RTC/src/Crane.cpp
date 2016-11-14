@@ -110,9 +110,7 @@ int CRANE::GetStatusPacket(uchar *recv)
 void CRANE::CheckStatusPacket(void)
 {
 	uchar buf[256];
-	//int length;
 	
-	//length = GetStatusPacket(buf);	
 	GetStatusPacket(buf);
 }
 
@@ -730,7 +728,6 @@ void CRANE::CRANEmoveGripper(double angleRatio)
 *************************************************/
 void CRANE::kinematics(double x, double y, double z, double JointPos[])
 {
-  //struct anglerad radData;
 	double x3;
 	double y3;
 	double z3;
@@ -769,7 +766,7 @@ void CRANE::kinematics(double x, double y, double z, double JointPos[])
 		theta3_value = ((x3*cos(theta1) + y3*sin(theta1))*(x3*cos(theta1) + y3*sin(theta1)) + z3*z3 - r2*r2 - r1*r1) / (2 * r1*r2);
 		theta3 = acos(theta3_value);
 
-		if ("theta3 > 0")
+		if (theta3 > 0)
 		{
 			//printf("theta3が+は綺麗じゃない\n");
 			theta3 = -theta3;
@@ -812,7 +809,7 @@ void CRANE::kinematics(double x, double y, double z, double JointPos[])
 			theta3 = -theta3;
 			alfa = atan((-r2*sin(theta3)) / (r1 + r2*cos(theta3)));
 			theta2 = acos(sqrt(x3*x3 + y3*y3) / sqrt((r1 + r2*cos(theta3))*(r1 + r2*cos(theta3)) + (r2*sin(theta3))*(r2*sin(theta3)))) + alfa;
-			//printf("%f,  %f,  %f,  %f,   %f,   %f\n", x, z, x3, z3, theta3*rad, theta2*rad);
+		
 		}
 		double kenzanx3;
 		kenzanx3 = cos(theta1)*(r1*cos(theta2) + r2*cos((theta3 + theta2)));

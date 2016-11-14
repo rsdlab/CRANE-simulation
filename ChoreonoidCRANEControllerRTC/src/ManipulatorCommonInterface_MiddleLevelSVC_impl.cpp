@@ -11,6 +11,7 @@
 #include "Crane.h"
 #include "defreturnid.h"
 
+
 /*
  * Example implementational code for IDL interface JARA_ARM::ManipulatorCommonInterface_Middle
  */
