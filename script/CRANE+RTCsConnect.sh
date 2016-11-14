@@ -2,7 +2,9 @@
 
 export HOST="localhost"
 
+echo ""
 echo "CRANE+実機用RTCを接続します。"
+echo ""
 
 #コンポーネント接続
 rtcon $HOST/RT_CRANE_RTC0.rtc:ManipulatorCommonInterface_Common  $HOST/ManipulatorControlSample0.rtc:ManipulatorCommonInterface_Common

@@ -2,7 +2,9 @@
 
 export HOST="localhost"
 
+echo ""
 echo "simulationRTCを接続します。"
+echo ""
 
 #コンポーネント接続
 rtcon $HOST/ChoreonoidCRANEControllerRTC0.rtc:ManipulatorCommonInterface_Common  $HOST/ManipulatorControlSample0.rtc:ManipulatorCommonInterface_Common

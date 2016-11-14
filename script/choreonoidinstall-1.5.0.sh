@@ -18,3 +18,4 @@ cmake .. -DENABLE_CORBA=ON -DBUILD_CORBA_PLUGIN=ON -DBUILD_OPENRTM_PLUGIN=ON  -D
 make
 
 cd ../../
+rm -rf choreonoid-1.5.0.zip

@@ -44,29 +44,6 @@ items:
             oldAccelSensorMode: false
         - 
           id: 3
-          name: "Floor"
-          plugin: Body
-          class: BodyItem
-          data: 
-            modelFile: "${SHARE}/model/misc/floor.wrl"
-            currentBaseLink: "BASE"
-            rootPosition: [ 0, 0, -0.1 ]
-            rootAttitude: [ 
-              1, 0, 0, 
-              0, 1, 0, 
-              0, 0, 1 ]
-            jointPositions: [  ]
-            initialRootPosition: [ 0, 0, -0.1 ]
-            initialRootAttitude: [ 
-              1, 0, 0, 
-              0, 1, 0, 
-              0, 0, 1 ]
-            zmp: [ 0, 0, 0 ]
-            collisionDetection: true
-            selfCollisionDetection: false
-            isEditable: false
-        - 
-          id: 4
           name: "CRANE"
           plugin: Body
           class: BodyItem
@@ -91,7 +68,7 @@ items:
             isEditable: true
           children: 
             - 
-              id: 5
+              id: 4
               name: "BodyRTC"
               plugin: OpenRTM
               class: BodyRTCItem
@@ -105,6 +82,29 @@ items:
                 InstanceName: "CRANE"
                 bodyPeriodicRate: 0
                 RelativePathBase: "RTC directory"
+        - 
+          id: 5
+          name: "Floor"
+          plugin: Body
+          class: BodyItem
+          data: 
+            modelFile: "${SHARE}/model/misc/floor.wrl"
+            currentBaseLink: "BASE"
+            rootPosition: [ 0, 0, -0.1 ]
+            rootAttitude: [ 
+              1, 0, 0, 
+              0, 1, 0, 
+              0, 0, 1 ]
+            jointPositions: [  ]
+            initialRootPosition: [ 0, 0, -0.1 ]
+            initialRootAttitude: [ 
+              1, 0, 0, 
+              0, 1, 0, 
+              0, 0, 1 ]
+            zmp: [ 0, 0, 0 ]
+            collisionDetection: true
+            selfCollisionDetection: false
+            isEditable: false
 views: 
   - 
     id: 0
@@ -117,8 +117,8 @@ views:
     class: ItemTreeView
     mounted: true
     state: 
-      checked: [ 1, 2, 3, 4 ]
-      expanded: [ 1, 3, 4 ]
+      checked: [ 1, 2, 3, 4, 5 ]
+      expanded: [ 1, 3 ]
   - 
     id: 2
     plugin: Base
@@ -166,9 +166,9 @@ views:
           fieldOfView: 0.6978
           near: 0.01
           far: 100
-          eye: [ 0.709734229, 0.521944204, 0.417671144 ]
-          direction: [ -0.876359117, -0.438179558, -0.199983433 ]
-          up: [ -0.17887062, -0.0894353102, 0.979799279 ]
+          eye: [ 0.71161452, 0.560688882, 0.484425845 ]
+          direction: [ -0.843501017, -0.453873275, -0.287236983 ]
+          up: [ -0.252943855, -0.136104704, 0.957859549 ]
         - 
           camera: [ System, Orthographic ]
           orthoHeight: 20
@@ -199,7 +199,7 @@ views:
       spinBox: true
       slider: true
       labelOnLeft: true
-      currentBodyItem: 4
+      currentBodyItem: 3
   - 
     id: 6
     plugin: Body
@@ -207,7 +207,7 @@ views:
     mounted: true
     state: 
       listingMode: "Link List"
-      currentBodyItem: 4
+      currentBodyItem: 3
   - 
     id: 7
     plugin: Python
@@ -217,7 +217,7 @@ toolbars:
   "TimeBar": 
     minTime: 0
     maxTime: 30
-    frameRate: 100
+    frameRate: 1000
     playbackFrameRate: 50
     idleLoopDrivenMode: false
     currentTime: 0
@@ -233,7 +233,7 @@ toolbars:
     penetrationBlockDepth: 0.0005
     lazyCollisionDetectionMode: true
   "BodyBar": 
-    current: 4
+    current: 3
   "LeggedBodyBar": 
     stanceWidth: 0.15
   "BodyMotionGenerationBar": 
@@ -280,7 +280,7 @@ Body:
         showPpcom: false
         showZmp: false
       - 
-        bodyItem: 4
+        bodyItem: 5
         showCenterOfMass: false
         showPpcom: false
         showZmp: false
@@ -331,7 +331,7 @@ viewAreas:
                 - 
                   type: pane
                   views: [ 4, 5 ]
-                  current: 5
+                  current: 4
                 - 
                   type: pane
                   views: [ 3 ]
