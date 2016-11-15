@@ -1,7 +1,7 @@
 #!/bin/sh
 
 #必要パッケージのインストール
-sudo apt-get install freeglut3-dev libglew-dev python-dev libboost-devlibboost-regex-dev libboost-date-time-dev libboost-thread-dev libboost-system-dev libboost-iostreams-dev libboost-filesystem-dev libboost-program-options-dev libboost-python-dev libeigen3-dev libqt4-dev libping12-dev libjpeg-dev Libode-dev libyaml-dev
+sudo apt-get install freeglut3-dev libglew-dev python-dev libboost-dev libboost-regex-dev libboost-date-time-dev libboost-thread-dev libboost-system-dev libboost-iostreams-dev libboost-filesystem-dev libboost-program-options-dev libboost-python-dev libeigen3-dev libqt4-dev libpng12-dev libjpeg-dev Libode-dev libyaml-dev
 
 cd ../
 
