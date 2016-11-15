@@ -7,7 +7,7 @@
 
 #include "ManipulatorCommonInterface_CommonSVC_impl.h"
 #include "Crane.h"
-#include "defreturnid.h"
+#include "returnID.h"
 
 /*
  * Example implementational code for IDL interface JARA_ARM::ManipulatorCommonInterface_Common
