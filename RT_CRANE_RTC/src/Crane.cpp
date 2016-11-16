@@ -504,7 +504,6 @@ void CRANE::setCRANEJointLimit(JLimit JointLimit[])
       概要：DynamixelのWrite_DataでサーボモーターのトルクのOnOffをする
 
       引数：
-            int id・・・モーターのID
             int truque・・・トルク(1…ON,0…OFF)
 
       戻り値：なし
@@ -809,7 +808,7 @@ void CRANE::kinematics(double x, double y, double z, double JointPos[])
 			theta3 = -theta3;
 			alfa = atan((-r2*sin(theta3)) / (r1 + r2*cos(theta3)));
 			theta2 = acos(sqrt(x3*x3 + y3*y3) / sqrt((r1 + r2*cos(theta3))*(r1 + r2*cos(theta3)) + (r2*sin(theta3))*(r2*sin(theta3)))) + alfa;
-		
+			//printf("%f,  %f,  %f,  %f,   %f,   %f\n", x, z, x3, z3, theta3*rad, theta2*rad);
 		}
 		double kenzanx3;
 		kenzanx3 = cos(theta1)*(r1*cos(theta2) + r2*cos((theta3 + theta2)));

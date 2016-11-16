@@ -34,7 +34,7 @@ JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_CommonSVC_impl::clearAl
   std::cout << "ClearAlarms" << std::endl;
   std::cout << "ERROR : コマンド未実装" << std::endl << std::endl;
   
-  RETURNID_NOT_IMPLEMENTED;
+  return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED,"未実装のコマンド");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_CommonSVC_impl::getActiveAlarm(JARA_ARM::AlarmSeq_out alarms)
@@ -43,7 +43,7 @@ JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_CommonSVC_impl::getActi
   alarms->length(3);
   std::cout << "GetActiveAlarm" << std::endl;
   std::cout << "ERROR : コマンド未実装" << std::endl << std::endl;
-  RETURNID_NOT_IMPLEMENTED;
+  return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED,"未実装のコマンド");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_CommonSVC_impl::getFeedbackPosJoint(JARA_ARM::JointPos_out pos)
@@ -67,7 +67,7 @@ JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_CommonSVC_impl::getFeed
     }
   std::cout << "Success" << std::endl << std::endl;
 
-  RETURNID_OK;
+  return RETURN_CODE(JARA_ARM::OK,"オペレーションを正常に受け付け");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_CommonSVC_impl::getManipInfo(JARA_ARM::ManipInfo_out mInfo)
@@ -90,7 +90,7 @@ JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_CommonSVC_impl::getMani
   
   std::cout << "Success" << std::endl << std::endl;
   
-  RETURNID_OK;
+  return RETURN_CODE(JARA_ARM::OK,"オペレーションを正常に受け付け");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_CommonSVC_impl::getSoftLimitJoint(JARA_ARM::LimitSeq_out softLimit)
@@ -122,14 +122,14 @@ JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_CommonSVC_impl::getSoft
 
 
   std::cout<<"Success"<<std::endl<<std::endl;
-  RETURNID_OK;
+  return RETURN_CODE(JARA_ARM::OK,"オペレーションを正常に受け付け");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_CommonSVC_impl::getState(JARA_ARM::ULONG& state)
 {
   std::cout << "getState" << std::endl;
   std::cout << "コマンド未実装" << std::endl << std::endl;
-  RETURNID_NOT_IMPLEMENTED;
+  return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED,"未実装のコマンド");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_CommonSVC_impl::servoOFF()
@@ -143,7 +143,7 @@ JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_CommonSVC_impl::servoOF
 
   std::cout<<"Success"<<std::endl<<std::endl;
   simcode = 102;
-  RETURNID_OK;
+  return RETURN_CODE(JARA_ARM::OK,"オペレーションを正常に受け付け");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_CommonSVC_impl::servoON()
@@ -156,7 +156,7 @@ JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_CommonSVC_impl::servoON
   
   std::cout<<"Success"<<std::endl<<std::endl;
   simcode = 101;
-  RETURNID_OK;
+  return RETURN_CODE(JARA_ARM::OK,"オペレーションを正常に受け付け");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_CommonSVC_impl::setSoftLimitJoint(const JARA_ARM::LimitSeq& softLimit)
@@ -184,11 +184,11 @@ JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_CommonSVC_impl::setSoft
   else 
     {
       std::cout<<"ERROR : Wrong Value"<<std::endl<<std::endl;
-      RETURNID_VALUE_ERR;
+      return RETURN_CODE(JARA_ARM::VALUE_ERR,"引数が不正");
     }
 
   std::cout<<"Success"<<std::endl<<std::endl;  
-  RETURNID_OK;
+  return RETURN_CODE(JARA_ARM::OK,"オペレーションを正常に受け付け");
 }
 
 

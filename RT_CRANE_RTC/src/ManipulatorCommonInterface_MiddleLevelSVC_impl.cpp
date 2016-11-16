@@ -33,14 +33,14 @@ JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::closeGr
   std::cout << "closeGripper" << std::endl;
   crane.CRANEcloseGripper();
   std::cout<<"Success"<<std::endl<<std::endl;
-  RETURNID_OK;
+  return RETURN_CODE(JARA_ARM::OK,"オペレーションを正常に受け付け");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::getBaseOffset(JARA_ARM::HgMatrix offset)
 {
   std::cout<<"getBaseOffset"<<std::endl;
   std::cout<<"ERROR : コマンド未実装"<<std::endl<<std::endl;
-  RETURNID_NOT_IMPLEMENTED;
+  return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED,"未実装のコマンド");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::getFeedbackPosCartesian(JARA_ARM::CarPosWithElbow& pos)
@@ -92,7 +92,7 @@ JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::getFeed
 
   std::cout<<"Success"<<std::endl<<std::endl;
   
-  RETURNID_OK;
+  return RETURN_CODE(JARA_ARM::OK,"オペレーションを正常に受け付け");
 
 }
 
@@ -100,7 +100,7 @@ JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::getMaxS
 {
   std::cout<<"GetMaxSpeedCartesian"<<std::endl;
   std::cout<<"ERROR : コマンド未実装"<<std::endl<<std::endl;
-  RETURNID_NOT_IMPLEMENTED;
+  return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED,"未実装のコマンド");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::getMaxSpeedJoint(JARA_ARM::DoubleSeq_out speed)
@@ -109,21 +109,21 @@ JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::getMaxS
   speed->length(1); 
   std::cout<<"GetMaxSpeedJoint"<<std::endl;
   std::cout<<"ERROR : コマンド未実装"<<std::endl<<std::endl;
-  RETURNID_NOT_IMPLEMENTED;
+  return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED,"未実装のコマンド");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::getMinAccelTimeCartesian(::CORBA::Double& aclTime)
 {
   std::cout<<"GetMinAccelTimeJoint"<<std::endl;
   std::cout<<"ERROR : コマンド未実装"<<std::endl<<std::endl;
-  RETURNID_NOT_IMPLEMENTED;
+  return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED,"未実装のコマンド");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::getMinAccelTimeJoint(::CORBA::Double& aclTime)
 {
   std::cout<<"GetMinAccelTimeJoint"<<std::endl;
   std::cout<<"ERROR : コマンド未実装"<<std::endl<<std::endl;
-  RETURNID_NOT_IMPLEMENTED;
+  return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED,"未実装のコマンド");
 }
 
 
@@ -148,7 +148,7 @@ JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::getSoft
   std::cout << "zLimit.lower : " << zLimit.lower << std::endl;
 
   std::cout<<"Success"<<std::endl<<std::endl;
-  RETURNID_OK;
+  return RETURN_CODE(JARA_ARM::OK,"オペレーションを正常に受け付け");  
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::moveGripper(JARA_ARM::ULONG angleRatio)
@@ -163,16 +163,16 @@ JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::moveGri
   }
   else{
     std::cout << "ERROR : angleRatio Wrong Value" << std::endl;
-    RETURNID_VALUE_ERR;
+    return RETURN_CODE(JARA_ARM::VALUE_ERR,"引数が不正");
   }
   std::cout<<"Success"<<std::endl<<std::endl;
 
-  RETURNID_OK;
+  return RETURN_CODE(JARA_ARM::OK,"オペレーションを正常に受け付け");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::moveLinearCartesianAbs(const JARA_ARM::CarPosWithElbow& carPoint)
 {
-  //double rad = 180/M_PI; //ラジアンを度数
+
   int Judge;
   double CRANEJointPos[ARM_FREEDOM-1];
   
@@ -183,14 +183,14 @@ JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::moveLin
 
   if(Judge != TRUE){
     std::cout<<"ERROR : Cartesian Soft Limit Over"<<std::endl<<std::endl;
-    RETURNID_NG;
+    return RETURN_CODE(JARA_ARM::NG,"オペレーション拒否");
   }
 
   //CRANEソフトリミット判定
   Judge = crane.CRANELimitJudgement(carPoint.carPos[0][3],carPoint.carPos[1][3],carPoint.carPos[2][3]);
   if(Judge != TRUE){
     std::cout<<"ERROR : CRANE Limit Over"<<std::endl<<std::endl;
-    RETURNID_NG;
+    return RETURN_CODE(JARA_ARM::NG,"オペレーション拒否");
   }
 
   //逆運動学  JointPosに計算角度が格納される
@@ -203,35 +203,35 @@ JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::moveLin
   Judge = crane.JointLimitJudgement();
   if(Judge != TRUE){
     std::cout<<"ERROR : Joint Soft Limit Over"<<std::endl<<std::endl;
-    RETURNID_NG;
+    return RETURN_CODE(JARA_ARM::NG,"オペレーション拒否");
   }
 
   crane.ArmAction();
   
   std::cout<<"Success"<<std::endl<<std::endl;
   
-  RETURNID_OK;
+  return RETURN_CODE(JARA_ARM::OK,"オペレーションを正常に受け付け");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::moveLinearCartesianRel(const JARA_ARM::CarPosWithElbow& carPoint)
 {
   std::cout<<"moveLinearCartesianRel"<<std::endl;
   std::cout<<"ERROR : コマンド未実装"<<std::endl<<std::endl;
-  RETURNID_NOT_IMPLEMENTED;
+  return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED,"未実装のコマンド");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::movePTPCartesianAbs(const JARA_ARM::CarPosWithElbow& carPoint)
 {
   std::cout<<"movePTPCartesianAbs"<<std::endl;
   std::cout<<"ERROR : コマンド未実装"<<std::endl<<std::endl;
-  RETURNID_NOT_IMPLEMENTED;
+  return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED,"未実装のコマンド");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::movePTPCartesianRel(const JARA_ARM::CarPosWithElbow& carPoint)
 {
   std::cout<<"movePTPCartesianRel"<<std::endl;
   std::cout<<"ERROR : コマンド未実装"<<std::endl<<std::endl;
-  RETURNID_NOT_IMPLEMENTED;
+  return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED,"未実装のコマンド");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::movePTPJointAbs(const JARA_ARM::JointPos& jointPoints)
@@ -252,21 +252,21 @@ JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::movePTP
   Judge = crane.JointLimitJudgement();
   if(Judge != TRUE){
     std::cout<<"ERROR : Joint Soft Limit Over"<<std::endl<<std::endl;
-    RETURNID_NG;
+    return RETURN_CODE(JARA_ARM::NG,"オペレーション拒否");
   }
   crane.setCRANEJointdata(CRANEJointPos);
   crane.ArmAction();
   
   std::cout<<"Success"<<std::endl<<std::endl;
   
-  RETURNID_OK;
+  return RETURN_CODE(JARA_ARM::OK,"オペレーションを正常に受け付け");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::movePTPJointRel(const JARA_ARM::JointPos& jointPoints)
 {
   std::cout<<"movePTPJointRel"<<std::endl;
   std::cout<<"ERROR : コマンド未実装"<<std::endl<<std::endl;
-  RETURNID_NOT_IMPLEMENTED;
+  return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED,"未実装のコマンド");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::openGripper()
@@ -274,84 +274,84 @@ JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::openGri
   std::cout << "OpenGripper" << std::endl;
   crane.CRANEopenGripper();
   std::cout<<"Success"<<std::endl<<std::endl;
-  RETURNID_OK;
+  return RETURN_CODE(JARA_ARM::OK,"オペレーションを正常に受け付け");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::pause()
 {
   std::cout<<"pause"<<std::endl;
   std::cout<<"ERROR : コマンド未実装"<<std::endl<<std::endl;
-  RETURNID_NOT_IMPLEMENTED;
+  return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED,"未実装のコマンド");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::resume()
 {
   std::cout<<"resume"<<std::endl;
   std::cout<<"ERROR : コマンド未実装"<<std::endl<<std::endl;
-  RETURNID_NOT_IMPLEMENTED;
+  return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED,"未実装のコマンド");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::stop()
 {
   std::cout<<"stop"<<std::endl;
-  std::cout<<"ERROR : コマンド未実装"<<std::endl<<std::endl; 
-  RETURNID_NOT_IMPLEMENTED;
+  std::cout<<"ERROR : コマンド未実装"<<std::endl<<std::endl;
+  return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED,"未実装のコマンド"); 
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::setAccelTimeCartesian(::CORBA::Double aclTime)
 {
   std::cout<<"setAccelTimeCartesian"<<std::endl;
   std::cout<<"ERROR : コマンド未実装"<<std::endl<<std::endl;
-  RETURNID_NOT_IMPLEMENTED;
+  return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED,"未実装のコマンド");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::setAccelTimeJoint(::CORBA::Double aclTime)
 {
   std::cout<<"setAccelTimeJoint"<<std::endl;
   std::cout<<"ERROR : コマンド未実装"<<std::endl<<std::endl;
-  RETURNID_NOT_IMPLEMENTED;
+  return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED,"未実装のコマンド");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::setBaseOffset(const JARA_ARM::HgMatrix offset)
 {
   std::cout<<"setBaseOffset"<<std::endl;
   std::cout<<"ERROR : コマンド未実装"<<std::endl<<std::endl;
-  RETURNID_NOT_IMPLEMENTED;
+  return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED,"未実装のコマンド");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::setControlPointOffset(const JARA_ARM::HgMatrix offset)
 {
   std::cout<<"setControlPointOffset"<<std::endl;
   std::cout<<"ERROR : コマンド未実装"<<std::endl<<std::endl;
-  RETURNID_NOT_IMPLEMENTED;
+  return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED,"未実装のコマンド");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::setMaxSpeedCartesian(const JARA_ARM::CartesianSpeed& speed)
 {
   std::cout<<"setMaxSpeedCartesian"<<std::endl;
   std::cout<<"ERROR : コマンド未実装"<<std::endl<<std::endl;
-  RETURNID_NOT_IMPLEMENTED;
+  return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED,"未実装のコマンド");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::setMaxSpeedJoint(const JARA_ARM::DoubleSeq& speed)
 {
   std::cout<<"setMaxSpeedJoint"<<std::endl;
   std::cout<<"ERROR : コマンド未実装"<<std::endl<<std::endl;
-  RETURNID_NOT_IMPLEMENTED;
+  return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED,"未実装のコマンド");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::setMinAccelTimeCartesian(::CORBA::Double aclTime)
 {
   std::cout<<"setMinAccelTimeCartesian"<<std::endl;
   std::cout<<"ERROR : コマンド未実装"<<std::endl<<std::endl;
-  RETURNID_NOT_IMPLEMENTED;
+  return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED,"未実装のコマンド");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::setMinAccelTimeJoint(::CORBA::Double aclTime)
 {
   std::cout<<"setMinAccelTimeJoint"<<std::endl;
   std::cout<<"ERROR : コマンド未実装"<<std::endl<<std::endl;
-  RETURNID_NOT_IMPLEMENTED;
+  return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED,"未実装のコマンド");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::setSoftLimitCartesian(const JARA_ARM::LimitValue& xLimit, const JARA_ARM::LimitValue& yLimit, const JARA_ARM::LimitValue& zLimit)
@@ -376,19 +376,19 @@ JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::setSoft
     }
   else{
     std::cout<<"ERROR : Wrong Value"<<std::endl<<std::endl;
-    RETURNID_VALUE_ERR;
+    return RETURN_CODE(JARA_ARM::VALUE_ERR,"引数が不正");
   }
   
   std::cout<<"Success"<<std::endl<<std::endl;
   
-  RETURNID_OK;
+  return RETURN_CODE(JARA_ARM::OK,"オペレーションを正常に受け付け");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::setSpeedCartesian(JARA_ARM::ULONG spdRatio)
 {
   std::cout<<"setSpeedCartesian"<<std::endl;
   std::cout<<"ERROR : コマンド未実装"<<std::endl<<std::endl;
-  RETURNID_NOT_IMPLEMENTED;
+  return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED,"未実装のコマンド");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::setSpeedJoint(JARA_ARM::ULONG spdRatio)
@@ -403,26 +403,26 @@ JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::setSpee
   }
   else{
     std::cout << "ERROR : Wrong Value" << std::endl << std::endl;
-    RETURNID_VALUE_ERR;
+    return RETURN_CODE(JARA_ARM::VALUE_ERR,"引数が不正");   
   }
   
   std::cout << "Success" << std::endl << std::endl;
   
-  RETURNID_OK;
+  return RETURN_CODE(JARA_ARM::OK,"オペレーションを正常に受け付け");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::moveCircularCartesianAbs(const JARA_ARM::CarPosWithElbow& carPointR, const JARA_ARM::CarPosWithElbow& carPointT)
 {
   std::cout<<"moveCircularCartesianAbs"<<std::endl;
   std::cout<<"ERROR : コマンド未実装"<<std::endl<<std::endl;
-  RETURNID_NOT_IMPLEMENTED;
+  return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED,"未実装のコマンド");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::moveCircularCartesianRel(const JARA_ARM::CarPosWithElbow& carPointR, const JARA_ARM::CarPosWithElbow& carPointT)
 {
   std::cout<<"moveCircularCartesianRel"<<std::endl;
   std::cout<<"ERROR : コマンド未実装"<<std::endl<<std::endl;
-  RETURNID_NOT_IMPLEMENTED;
+  return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED,"未実装のコマンド");
 }
 
 
@@ -438,7 +438,7 @@ JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::setHome
   
   std::cout<<"Success"<<std::endl<<std::endl;
   
-  RETURNID_OK;
+  return RETURN_CODE(JARA_ARM::OK,"オペレーションを正常に受け付け");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::getHome(JARA_ARM::JointPos_out jointPoint)
@@ -455,7 +455,7 @@ JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::getHome
   
   std::cout<<"Success"<<std::endl<<std::endl;
   
-  RETURNID_OK;
+  return RETURN_CODE(JARA_ARM::OK,"オペレーションを正常に受け付け");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::goHome()
@@ -466,7 +466,7 @@ JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::goHome(
 
   std::cout<<"Success"<<std::endl<<std::endl;
   
-  RETURNID_OK;
+  return RETURN_CODE(JARA_ARM::OK,"オペレーションを正常に受け付け");
 }
 
 
