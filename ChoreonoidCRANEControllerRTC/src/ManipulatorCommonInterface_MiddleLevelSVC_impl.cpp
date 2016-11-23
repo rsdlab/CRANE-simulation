@@ -295,6 +295,13 @@ JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::movePTP
     crane.ArmAction();
   }
 
+  //シミュレーション用
+  for(int i=0;i<3;i++){
+    for(int j=0;j<4;j++){
+      C_carPos[i][j] = carPoint.carPos[i][j];
+    }
+  }
+
   std::cout<<"Success"<<std::endl<<std::endl;
   simcode = 204;
 
@@ -399,6 +406,11 @@ JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::movePTP
     crane.ArmAction();
   }
   
+  //シミュレーション用
+  for(int i=0;i<4;i++){
+    C_jointPoint[i] = jointPoints[i];
+  }
+
   simcode = 206;
   std::cout<<"Success"<<std::endl<<std::endl;
   

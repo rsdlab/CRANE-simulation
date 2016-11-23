@@ -1,0 +1,13 @@
+[0m[34mNov 23 08:17:11.813 INFO: manager: [0m1.1.2
+[0m[34mNov 23 08:17:11.813 INFO: manager: [0mCopyright (C) 2003-2014
+[0m[34mNov 23 08:17:11.813 INFO: manager: [0m  Noriaki Ando
+[0m[34mNov 23 08:17:11.813 INFO: manager: [0m  Intelligent Systems Research Institute, AIST
+[0m[34mNov 23 08:17:11.813 INFO: manager: [0mManager starting.
+[0m[34mNov 23 08:17:11.813 INFO: manager: [0mStarting local logging.
+[0m[33mNov 23 08:17:11.816 WARNING: NamingOnCorba: [0mNo endpoint for the CORBA naming service (localhost) was found.
+[0m[34mNov 23 08:17:11.816 INFO: NamingManager: [0mNameServer connection succeeded: corba/localhost
+[0m[34mNov 23 08:17:11.817 INFO: ManagerServant: [0mMaster manager not found
+[0m[34mNov 23 08:17:20.364 INFO: ManipulatorCommonInterface_Common: [0minterface matched with old descriptor: port.JARA_ARM::ManipulatorCommonInterface_Common.ManipulatorCommonInterface_Common
+[0m[34mNov 23 08:17:20.410 INFO: ManipulatorCommonInterface_Middle: [0minterface matched with old descriptor: port.JARA_ARM::ManipulatorCommonInterface_Middle.ManipulatorCommonInterface_Middle
+[0m[35mNov 23 08:18:46.010 ERROR: periodic_ec: [0mThe component is not responding.
+[0m[35mNov 23 08:18:46.010 ERROR: periodic_ec: [0mThe component could not be deactivated.

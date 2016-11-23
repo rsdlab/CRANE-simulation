@@ -10,10 +10,6 @@
 #include "ChoreonoidCRANEControllerRTC.h"
 #include "Crane.h"
 #include "ChoreonoidControl.h"
-#include <sys/time.h>
-//#include <ctime>
-//#include <ratio>
-//#include <chrono>
 
 // Module specification
 // <rtc-template block="module_spec">
@@ -46,21 +42,13 @@ static const char* choreonoidcranecontrollerrtc_spec[] =
     ""
   };
 // </rtc-template>
+#define TIMESTEP 0.001 //Execute実行周期1000Hz
+
 double targetPos[5];
 double oldPos[5];
 double JointPos[ARM_FREEDOM-1];
 const double pgain[5] = {20, 30, 20, 15, 15};
 const double dgain[5] = {10, 10, 10, 10, 10};
-int clock_start;
-//std::chrono::system_clock::time_point  start, end;
-//clock_t start;
-//clock_t end;
-double sec;
-double micro;
-double duration;
-struct timeval start;
-struct timeval end;
-
 
 
 /*!
@@ -155,7 +143,6 @@ RTC::ReturnCode_t ChoreonoidCRANEControllerRTC::onActivated(RTC::UniqueId ec_id)
   std::cout << "initArm" << std::endl;
   
   simcode = 101;
-  clock_start = 0;
   
   m_torque.data.length(5);
   m_angleIn.read();
@@ -185,8 +172,6 @@ RTC::ReturnCode_t ChoreonoidCRANEControllerRTC::onExecute(RTC::UniqueId ec_id)
     {
       ActCommand();
     }
-
-  clock_start = 1;
 
   return RTC::RTC_OK;
 }
@@ -243,17 +228,6 @@ switch(simcode)
     case(101)://ServoON or 現在位置の維持に使用**************************************************
       if(m_angleIn.isNew()){
 	m_angleIn.read();
-	if(clock_start !=0){
-	  //end = clock();
-	  //duration = (double)(end - start)/CLOCKS_PER_SEC;
-	  gettimeofday(&end, NULL);
-	  sec = (double)(end.tv_sec - start.tv_sec);
-	  micro = (double)(end.tv_usec - start.tv_usec);
-	  duration = sec + micro / 1000.0 / 1000.0;
-	  std::cout << "duration = " << duration << std::endl;
-	}
-	gettimeofday(&start, NULL);
-	//start =  clock();
       }
       for(size_t i=0; i < m_angle.data.length(); ++i)
 	{
@@ -263,8 +237,8 @@ switch(simcode)
       for(size_t j=0; j < m_torque.data.length(); ++j)
 	{
 	  deltaPos[j] = targetPos[j] - nowPos[j];
-	  velocity[j] = (nowPos[j]-oldPos[j])/(duration);
-	  m_torque.data[j] =  deltaPos[j]*pgain[j];// + (0.0 - velocity[j])*dgain[j];
+	  velocity[j] = (nowPos[j]-oldPos[j])/(TIMESTEP);
+	  m_torque.data[j] =  deltaPos[j]*pgain[j] + (0.0 - velocity[j])*dgain[j];
 	  oldPos[j] = nowPos[j];
 	}
 
@@ -278,17 +252,6 @@ switch(simcode)
      
       if(m_angleIn.isNew()){
 	m_angleIn.read();
-	if(clock_start !=0){
-	  //end = clock();
-	  //duration = (double)(end - start)/CLOCKS_PER_SEC;
-	  gettimeofday(&end, NULL);
-	  sec = (double)(end.tv_sec - start.tv_sec);
-	  micro = (double)(end.tv_usec - start.tv_usec);
-	  duration = sec + micro / 1000.0 / 1000.0;
-	  std::cout << "duration = " << duration << std::endl;
-	}
-	gettimeofday(&start, NULL);
-	//start =  clock();
       }
 
       targetPos[4] = (Hand_LimitMin - 150)*M_PI/180;
@@ -300,7 +263,7 @@ switch(simcode)
       for(size_t j=0; j < m_torque.data.length(); ++j)
 	{
 	  deltaPos[j] = targetPos[j] - nowPos[j];
-	  velocity[j] = (nowPos[j]-oldPos[j])/(duration);
+	  velocity[j] = (nowPos[j]-oldPos[j])/(TIMESTEP);
 	  m_torque.data[j] =  deltaPos[j]*pgain[j] + (0.0 - velocity[j])*dgain[j];
 	  oldPos[j] = nowPos[j];
 	}
@@ -317,17 +280,6 @@ switch(simcode)
         
       if(m_angleIn.isNew()){
 	m_angleIn.read();
-	if(clock_start !=0){
-	  //end = clock();
-	  //duration = (double)(end - start)/CLOCKS_PER_SEC;
-	  gettimeofday(&end, NULL);
-	  sec = (double)(end.tv_sec - start.tv_sec);
-	  micro = (double)(end.tv_usec - start.tv_usec);
-	  duration = sec + micro / 1000.0 / 1000.0;
-	  std::cout << "duration = " << duration << std::endl;
-	}
-	gettimeofday(&start, NULL);
-	//start =  clock();
       }
 
       std::cout << "シミュレータのアーム" << std::endl;
@@ -354,17 +306,6 @@ switch(simcode)
     case(203)://moveGripper**********************************************************************
       if(m_angleIn.isNew()){
 	m_angleIn.read();
-	if(clock_start !=0){
-	  //end = clock();
-	  //duration = (double)(end - start)/CLOCKS_PER_SEC;
-	  gettimeofday(&end, NULL);
-	  sec = (double)(end.tv_sec - start.tv_sec);
-	  micro = (double)(end.tv_usec - start.tv_usec);
-	  duration = sec + micro / 1000.0 / 1000.0;
-	  std::cout << "duration = " << duration << std::endl;
-	}
-	gettimeofday(&start, NULL);
-	//start =  clock();
       }
 
       targetPos[4] = (Hand_LimitMax-Hand_LimitMin)*(C_angleRatio*0.01)+Hand_LimitMin;//angleRatioは%で代入、Minのほうがサーボモーターに送る値は大きい
@@ -377,7 +318,7 @@ switch(simcode)
       for(size_t j=0; j < m_torque.data.length(); ++j)
 	{
 	  deltaPos[j] = targetPos[j] - nowPos[j];
-	  velocity[j] = (nowPos[j]-oldPos[j])/(duration);
+	  velocity[j] = (nowPos[j]-oldPos[j])/(TIMESTEP);
 	  m_torque.data[j] =  deltaPos[j]*pgain[j] + (0.0 - velocity[j])*pgain[j];
 	  oldPos[j] = nowPos[j];
 	}
@@ -388,17 +329,6 @@ switch(simcode)
     case(204)://moveLinearCartesianAbs*********************************************************
       if(m_angleIn.isNew()){
 	m_angleIn.read();
-	if(clock_start !=0){
-	  //end = clock();
-	  //duration = (double)(end - start)/CLOCKS_PER_SEC;
-	  gettimeofday(&end, NULL);
-	  sec = (double)(end.tv_sec - start.tv_sec);
-	  micro = (double)(end.tv_usec - start.tv_usec);
-	  duration = sec + micro / 1000.0 / 1000.0;
-	  std::cout << "duration = " << duration << std::endl;
-	}
-	gettimeofday(&start, NULL);
-	//start =  clock();
       }
 
       crane.kinematics(C_carPos[0][3],C_carPos[1][3],C_carPos[2][3],JointPos);
@@ -416,7 +346,7 @@ switch(simcode)
       for(size_t j=0; j < m_torque.data.length(); ++j)
 	{
 	  deltaPos[j] = targetPos[j] - nowPos[j];
-	  velocity[j] = (nowPos[j]-oldPos[j])/(duration);
+	  velocity[j] = (nowPos[j]-oldPos[j])/(TIMESTEP);
 	  m_torque.data[j] =  deltaPos[j]*pgain[j] + (0.0 - velocity[j])*dgain[j];
 	  oldPos[j] = nowPos[j];
 	}
@@ -428,17 +358,6 @@ switch(simcode)
 
       if(m_angleIn.isNew()){
 	m_angleIn.read();
-	if(clock_start !=0){
-	  //end = clock();
-	  //duration = (double)(end - start)/CLOCKS_PER_SEC;
-	  gettimeofday(&end, NULL);
-	  sec = (double)(end.tv_sec - start.tv_sec);
-	  micro = (double)(end.tv_usec - start.tv_usec);
-	  duration = sec + micro / 1000.0 / 1000.0;
-	  std::cout << "duration = " << duration << std::endl;
-	}
-	gettimeofday(&start, NULL);
-	//start =  clock();
       }
 
      targetPos[4] = (Hand_LimitMax - 150)*M_PI/180;
@@ -451,7 +370,7 @@ switch(simcode)
       for(size_t j=0; j < m_torque.data.length(); ++j)
 	{
 	  deltaPos[j] = targetPos[j] - nowPos[j];
-	  velocity[j] = (nowPos[j]-oldPos[j])/(duration);
+	  velocity[j] = (nowPos[j]-oldPos[j])/(TIMESTEP);
 	  m_torque.data[j] =  deltaPos[j]*pgain[j] + (0.0 - velocity[j])*dgain[j];
 	  oldPos[j] = nowPos[j];
 	}
@@ -463,23 +382,12 @@ switch(simcode)
    
       if(m_angleIn.isNew()){
 	m_angleIn.read();
-	if(clock_start !=0){
-	  //end = clock();
-	  //duration = (double)(end - start)/CLOCKS_PER_SEC;
-	  gettimeofday(&end, NULL);
-	  sec = (double)(end.tv_sec - start.tv_sec);
-	  micro = (double)(end.tv_usec - start.tv_usec);
-	  duration = sec + micro / 1000.0 / 1000.0;
-	  std::cout << "duration = " << duration << std::endl;
-	}
-	gettimeofday(&start, NULL);
-	//start =  clock();
       }
 
    targetPos[0] = (C_jointPoint[0])*M_PI/180;//地面からの角度が入力されるため，アームの初期位置からの角度で計算するように変換
-      targetPos[1] = -C_jointPoint[1]*M_PI/180;
-      targetPos[2] = -C_jointPoint[2]*M_PI/180;
-      targetPos[3] = -C_jointPoint[3]*M_PI/180;
+      targetPos[1] = C_jointPoint[1]*M_PI/180;
+      targetPos[2] = C_jointPoint[2]*M_PI/180;
+      targetPos[3] = C_jointPoint[3]*M_PI/180;
 
       for(size_t i=0; i < m_angle.data.length(); ++i)
 	{
@@ -489,8 +397,8 @@ switch(simcode)
       for(size_t j=0; j < m_torque.data.length(); ++j)
 	{
 	  deltaPos[j] = targetPos[j] - nowPos[j];
-	  velocity[j] = (nowPos[j]-oldPos[j])/(duration);
-	  m_torque.data[j] =  deltaPos[j]*pgain[j];// + (0.0 - velocity[j])*dgain[j];
+	  velocity[j] = (nowPos[j]-oldPos[j])/(TIMESTEP);
+	  m_torque.data[j] =  deltaPos[j]*pgain[j] + (0.0 - velocity[j])*dgain[j];
 	  oldPos[j] = nowPos[j];
 	}
       
@@ -501,17 +409,6 @@ switch(simcode)
    
       if(m_angleIn.isNew()){
 	m_angleIn.read();
-	if(clock_start !=0){
-	  //end = clock();
-	  //duration = (double)(end - start)/CLOCKS_PER_SEC;
-	  gettimeofday(&end, NULL);
-	  sec = (double)(end.tv_sec - start.tv_sec);
-	  micro = (double)(end.tv_usec - start.tv_usec);
-	  duration = sec + micro / 1000.0 / 1000.0;
-	  std::cout << "duration = " << duration << std::endl;
-	}
-	gettimeofday(&start, NULL);
-	//start =  clock();
       }
 
       targetPos[0] = HomeMotorPosition[0]*deg;
@@ -527,7 +424,7 @@ switch(simcode)
       for(size_t j=0; j < m_torque.data.length(); ++j)
 	{
 	  deltaPos[j] = targetPos[j] - nowPos[j];
-	  velocity[j] = (nowPos[j]-oldPos[j])/(duration);
+	  velocity[j] = (nowPos[j]-oldPos[j])/(TIMESTEP);
 	  m_torque.data[j] =  deltaPos[j]*pgain[j] + (0.0 - velocity[j])*dgain[j];
 	  oldPos[j] = nowPos[j];
 	}
