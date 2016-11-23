@@ -100,8 +100,8 @@ JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_CommonSVC_impl::getSoft
 
   softLimit=new JARA_ARM::LimitSeq;
   softLimit->length(ARM_FREEDOM);
-  
   JLimit JointLimit[ARM_FREEDOM-1];
+  
   for(int i=0;i<ARM_FREEDOM-1;i++){
     crane.getCRANEJointLimit(JointLimit);
       }
@@ -138,8 +138,9 @@ JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_CommonSVC_impl::servoOF
   int torque = 0;
   std::cout<<"ServoOFF (SERVO_OFF)"<<std::endl;  
   
-  if(c_Mode==1||c_Mode==2)
+  if(c_Mode==1||c_Mode==2){
     crane.ServoOnOff(torque);
+  }
 
   std::cout<<"Success"<<std::endl<<std::endl;
   simcode = 102;
@@ -151,8 +152,9 @@ JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_CommonSVC_impl::servoON
 
   int torque = 1;
   std::cout<<"ServoON (SERVO_ON)"<<std::endl;
-  if(c_Mode==1||c_Mode==2)
+  if(c_Mode==1||c_Mode==2){
     crane.ServoOnOff(torque);
+  }
   
   std::cout<<"Success"<<std::endl<<std::endl;
   simcode = 101;

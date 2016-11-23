@@ -62,6 +62,7 @@ JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_CommonSVC_impl::getFeed
 	std::cout << "pos["<<i<<"] = " << pos[i] << "[°]" << std::endl;
     }
   
+  std::cout << "Success" << std::endl << std::endl;
   return RETURN_CODE(JARA_ARM::OK,"オペレーションを正常に受け付け");
 }
 

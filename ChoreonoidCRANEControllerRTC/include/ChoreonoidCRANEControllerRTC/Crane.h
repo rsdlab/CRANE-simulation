@@ -22,7 +22,6 @@
 
 /********* 記号定数 *********/
 
-
 // アーム自由度 (CRANE+ has 5 freedom)
 #define ARM_FREEDOM	5
 
@@ -66,23 +65,11 @@
 
 /********* Type define *********/
 
-
-// typedef for serial communication
 typedef unsigned char uchar;
 
-// typedef boolean
-typedef enum
-{
-  FALSE = 0,
-  TRUE = 1,
-}t_bool;
-
-// サーボモーターに書き込むデータ
+//サーボに書き込むデータ
 typedef struct
 {
-  t_bool LED;
-  t_bool TorqueON;
-  
   int CW_ComplianceMargin;
   int CCW_ComplianceMargin;
   
@@ -91,42 +78,22 @@ typedef struct
   
   double Angle;	//degree
   double Speed;	//rpm
-  double Torque;	//%
-}t_servoWrite;
+  double Torque;//%
+}ServoWrite;
 
-// サーボモーターから読み取るデータ
-typedef struct
-{
-  double Angle;	//degree
-  double Speed;	//rpm
-  double Torque;	//%
-}t_servoRead;
-
-// サーボモーターの情報
-typedef struct
-{
-  int id;
-  t_servoWrite write;
-  t_servoRead read;
-}t_servo;
-
-// ロボットアームの情報
-typedef struct
-{
-	t_servo servo[ARM_FREEDOM];
-}t_arm;
-
-typedef struct
-{
-  short Upper;
-  short Lower;
-}CLimit;
-
+//CRANEのジョイントリミットの構造体
 typedef struct
 {
   short Upper;
   short Lower;
 }JLimit;
+
+//CRANEの可動範囲リミットの構造体
+typedef struct
+{
+  short Upper;
+  short Lower;
+}CLimit;
 
 typedef struct
 {
@@ -144,39 +111,40 @@ class CRANE{
  private:
 
   //private変数の宣言
+  char *dev;
   int fd;
-  t_arm armdata;
+  ServoWrite Writedata[ARM_FREEDOM]; //Writedata[0]はサーボID1のデータ
+  double ReadAngle[ARM_FREEDOM];
   Cartesian CRANECartesianLimit;
   JLimit CRANEJointLimit[5];
+  //Structure for Saving now setting
+  struct termios newtio;
 
   //private関数の定義
   // シリアル通信関数
-  uchar calcRobotisCheckSum(uchar *buf, int sizeofArray);
-  int GetStatusPacket(uchar *recv);
-  void CheckStatusPacket(void);
-  void WriteData2Bytes(uchar *buf, t_servoWrite data);
-  void RegWrite(int id, t_servoWrite data);
-  void Action(void);
   void serialWrite(uchar *buf, int length);
-  void initPacket(uchar *buf);
-  void getArmStatus(t_arm *arm);
-  void GetStatus(t_servo *servo);
+  uchar calcCheckSum(uchar *buf, int Datasize);
+  void checkserial();
+  void RegWrite(int id, ServoWrite data[]);
+  void Action(void);
+  void ReadServoAngle(int id, double ReadAngle[]);
+  void ReadArmAngle();
 public:
 
   //コンストラクタ
   CRANE();
 
   // シリアル通信関数
-  void openSerialPort(const char *SERIAL_PORT);
-
+  int OpenCOMDevice(const char *SERIAL_PORT);
+  void CloseCOMDevice();
   
   // 初期化関数
-  void initServo(int id, t_servo *servo);
+  void initServo(int id, ServoWrite data[]);
   void initArm();
 
   //private変数セット関数
   void setCRANEJointdata(double JointPos[]);
-  void setCRANESpeeddata(double spdRatio);
+  void setCRANESpeeddata(int id, double spdRatio);
   void setCRANECartesianLimit(Cartesian CartesianLimit);
   void setCRANEJointLimit(JLimit JointLimit[]);
 
@@ -186,9 +154,8 @@ public:
   void getCRANECartesianLimit(Cartesian CartesianLimit);
   void getCRANEJointLimit(JLimit JointLimit[]);
   
-  // その他関数
+  // CRANE+に関する関数
   void ServoOnOff(int torque);
-  void kinematics(double x, double y, double z, double JointPos[]);
   void ArmAction();
   void CRANEcloseGripper();
   void CRANEopenGripper();
@@ -196,6 +163,8 @@ public:
   int CartesianLimitJudgement( double x , double y , double z );
   int JointLimitJudgement();
   int CRANELimitJudgement(double x, double y, double z);
+  void kinematics(double x, double y, double z, double JointPos[]);
+
 
 /********* 関数のプロトタイプ宣言の終了 *********/
  
@@ -203,7 +172,5 @@ public:
 
 /**************** extern 宣言 *****************/
 extern CRANE crane;
-
-
 
 #endif//__DEFRETURNID_H__

@@ -228,7 +228,7 @@ RTC::ReturnCode_t ManipulatorControlSample::onExecute(RTC::UniqueId ec_id)
       pos.carPos[1][3]=y;
       pos.carPos[2][3]=z;
       
-      m_rid=m_ManipulatorCommonInterface_Middle->moveLinearCartesianAbs(pos);
+      m_rid=m_ManipulatorCommonInterface_Middle->movePTPCartesianAbs(pos);
       if(m_rid->id != 0){//Error
 	std::cout<<"moveLinearCartesianAbs ERROR"<<std::endl;
 	std::cout<<m_rid->comment<<std::endl<<std::endl;

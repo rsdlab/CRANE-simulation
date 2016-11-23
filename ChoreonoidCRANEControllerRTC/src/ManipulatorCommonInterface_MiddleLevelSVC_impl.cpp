@@ -11,6 +11,7 @@
 #include "Crane.h"
 #include "returnID.h"
 
+double spdRatio_Middle;
 /*
  * Example implementational code for IDL interface JARA_ARM::ManipulatorCommonInterface_Middle
  */
@@ -180,52 +181,9 @@ JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::moveGri
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::moveLinearCartesianAbs(const JARA_ARM::CarPosWithElbow& carPoint)
 {
-  int Judge;
-  double CRANEJointPos[ARM_FREEDOM-1];
-  
-  std::cout << "moveLinearCartesianAbs" << std::endl;
-
-  //Cartesianソフトリミット判定
-  Judge = crane.CartesianLimitJudgement(carPoint.carPos[0][3],carPoint.carPos[1][3],carPoint.carPos[2][3]);
-
-  if(Judge != TRUE){
-    std::cout<<"ERROR : Cartesian Soft Limit Over"<<std::endl<<std::endl;
-    return RETURN_CODE(JARA_ARM::NG,"オペレーション拒否");
-  }
-
-  //CRANEソフトリミット判定
-  Judge = crane.CRANELimitJudgement(carPoint.carPos[0][3],carPoint.carPos[1][3],carPoint.carPos[2][3]);
-  if(Judge != TRUE){
-    std::cout<<"ERROR : CRANE Limit Over"<<std::endl<<std::endl;
-    return RETURN_CODE(JARA_ARM::NG,"オペレーション拒否");
-  }
-
-  //逆運動学  JointPosに計算角度が格納される
-  crane.kinematics(carPoint.carPos[0][3],carPoint.carPos[1][3],carPoint.carPos[2][3],CRANEJointPos);
-  
-  //角度データセット
-  crane.setCRANEJointdata(CRANEJointPos);
-
-  //Jointソフトリミット判定
-  Judge = crane.JointLimitJudgement();
-  if(Judge != TRUE){
-    std::cout<<"ERROR : Joint Soft Limit Over"<<std::endl<<std::endl;
-    return RETURN_CODE(JARA_ARM::NG,"オペレーション拒否");
-  }
-  if(c_Mode==1||c_Mode==2){
-    crane.ArmAction();
-  }
-  
-  //シミュレーション用
-  for(int i=0;i<3;i++){
-    for(int j=0;j<4;j++){
-      C_carPos[i][j] = carPoint.carPos[i][j];
-    }
-  }
-
-  std::cout<<"Success"<<std::endl<<std::endl;
-  simcode = 204;
-  return RETURN_CODE(JARA_ARM::OK,"オペレーションを正常に受け付け");
+  std::cout<<"moveLinearCartesianAbs"<<std::endl;
+  std::cout<<"ERROR : コマンド未実装"<<std::endl<<std::endl;
+  return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED,"未実装のコマンド");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::moveLinearCartesianRel(const JARA_ARM::CarPosWithElbow& carPoint)
@@ -237,9 +195,111 @@ JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::moveLin
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::movePTPCartesianAbs(const JARA_ARM::CarPosWithElbow& carPoint)
 {
-  std::cout<<"movePTPCartesianAbs"<<std::endl;
-  std::cout<<"ERROR : コマンド未実装"<<std::endl<<std::endl;
-  return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED,"未実装のコマンド");
+  std::cout << "movePTPJointAbs" << std::endl;
+  int i=0,idm=0,ids=0,idt=0,idf=0;
+  double setfabs = 0;
+  int Judge;
+  double CRANEJointPos[ARM_FREEDOM-1];   //差の絶対値
+  double nowJointPos[ARM_FREEDOM-1];     //現在値
+  double targetJointPos[ARM_FREEDOM-1];  //目標値
+  double difference[ARM_FREEDOM-1];      //現在値と目標値の差
+  double max = 0;      //差の順位付け
+  double second = 0;
+  double third = 0;
+  double fourth = 0;
+
+  std::cout << "moveLinearCartesianAbs" << std::endl;
+
+  //Cartesianソフトリミット判定
+  Judge = crane.CartesianLimitJudgement(carPoint.carPos[0][3],carPoint.carPos[1][3],carPoint.carPos[2][3]);
+
+  if(Judge != true){
+    std::cout<<"ERROR : Cartesian Soft Limit Over"<<std::endl<<std::endl;
+    return RETURN_CODE(JARA_ARM::NG,"オペレーション拒否");
+  }
+
+  //CRANEソフトリミット判定
+  Judge = crane.CRANELimitJudgement(carPoint.carPos[0][3],carPoint.carPos[1][3],carPoint.carPos[2][3]);
+  if(Judge != true){
+    std::cout<<"ERROR : CRANE Limit Over"<<std::endl<<std::endl;
+    return RETURN_CODE(JARA_ARM::NG,"オペレーション拒否");
+  }
+
+  //逆運動学  JointPosに計算角度が格納される
+  crane.kinematics(carPoint.carPos[0][3],carPoint.carPos[1][3],carPoint.carPos[2][3],targetJointPos);
+
+  if(c_Mode==1||c_Mode==2){
+    crane.getCRANEJointdata(nowJointPos);
+    //目標値と現在地の差を取る
+    for(int h=0;h<ARM_FREEDOM-1;h++){
+      difference[h] = targetJointPos[h] - nowJointPos[h]; 
+      setfabs = difference[h];
+      CRANEJointPos[h] = fabs(setfabs);   //絶対値
+      //std::cout << "CRANEJointPos[h] = " << CRANEJointPos[h] << std::endl;
+    }
+    
+    //目標値と現在地の差によって関節速度を変える
+    //一番差が大きいServoidを求める
+    max = CRANEJointPos[0];
+    i=0;
+    idm=i+1;
+    for(i=1;i<ARM_FREEDOM-1;i++){
+      if(max < CRANEJointPos[i]){
+	fourth = third;
+	third = second;
+	second = max;
+	max = CRANEJointPos[i];
+	idf = idt;      
+	idt = ids;      
+	ids = idm;
+	idm = i+1;//mにidを入れるためi+1
+      }
+      else if(max > CRANEJointPos[i] && second <CRANEJointPos[i])
+	{
+	  fourth = third;
+	  third = second;
+	  second = CRANEJointPos[i];
+	  idf = idt;
+	  idt = ids;
+	  ids = i+1;
+	}
+      else if(max > CRANEJointPos[i] && second > CRANEJointPos[i] && third < CRANEJointPos[i])
+	{
+	  fourth = third;
+	  third = CRANEJointPos[i];
+	  idf = idt;
+	  idt = i+1;
+	}
+      else if(max > CRANEJointPos[i] && second > CRANEJointPos[i] && third > CRANEJointPos[i])
+	{
+	  fourth = CRANEJointPos[i];
+	  idf = i+1;
+	}
+    } 
+  }
+  //角度データセット
+  crane.setCRANEJointdata(targetJointPos);
+  
+  //Jointソフトリミット判定
+  Judge = crane.JointLimitJudgement();
+  if(Judge != true){
+    std::cout<<"ERROR : Joint Soft Limit Over"<<std::endl<<std::endl;
+    return RETURN_CODE(JARA_ARM::NG,"オペレーション拒否");
+  }
+
+  if(c_Mode==1||c_Mode==2){
+    crane.setCRANESpeeddata(idm,spdRatio_Middle);
+    crane.setCRANESpeeddata(ids,spdRatio_Middle*(second/max));
+    crane.setCRANESpeeddata(idt,spdRatio_Middle*(third/max));
+    crane.setCRANESpeeddata(idf,spdRatio_Middle*(fourth/max));
+    crane.ArmAction();
+  }
+
+  std::cout<<"Success"<<std::endl<<std::endl;
+  simcode = 204;
+
+  return RETURN_CODE(JARA_ARM::OK,"オペレーションを正常に受け付け");
+
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::movePTPCartesianRel(const JARA_ARM::CarPosWithElbow& carPoint)
@@ -252,33 +312,93 @@ JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::movePTP
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::movePTPJointAbs(const JARA_ARM::JointPos& jointPoints)
 {
   std::cout << "movePTPJointAbs" << std::endl;
+  int i=0,idm=0,ids=0,idt=0,idf=0;
+  double setfabs = 0;
   int Judge;
-  double CRANEJointPos[ARM_FREEDOM-1];
+  double CRANEJointPos[ARM_FREEDOM-1];   //差の絶対値
+  double nowJointPos[ARM_FREEDOM-1];     //現在値
+  double targetJointPos[ARM_FREEDOM-1];  //目標値
+  double difference[ARM_FREEDOM-1];      //現在値と目標値の差
+  double max = 0;      //差の順位付け
+  double second = 0;
+  double third = 0;
+  double fourth = 0;
+
 
   for(int i=0;i<4;i++){
   std::cout << "JointPoint["<<i<<"] = " << jointPoints[i] <<std::endl; 
   }
 
-  CRANEJointPos[0] = jointPoints[0];
-  CRANEJointPos[1] = 90 + jointPoints[1];//アームが立った状態からの角度
-  CRANEJointPos[2] = jointPoints[2];
-  CRANEJointPos[3] = jointPoints[3];
+  targetJointPos[0] = jointPoints[0];
+  targetJointPos[1] = 90 + jointPoints[1];
+  targetJointPos[2] = jointPoints[2];
+  targetJointPos[3] = jointPoints[3];
 
-  crane.setCRANEJointdata(CRANEJointPos);
+  if(c_Mode==1||c_Mode==2){
+    crane.getCRANEJointdata(nowJointPos);
+    
+    //目標値と現在地の差を取る
+    for(int h=0;h<ARM_FREEDOM-1;h++){
+      difference[h] = targetJointPos[h] - nowJointPos[h]; 
+      setfabs = difference[h];
+      CRANEJointPos[h] = fabs(setfabs);   //絶対値
+    }
+    
+    //目標値と現在地の差によって関節速度を変える
+    //差が大きい関節idを求める
+    max = CRANEJointPos[0];
+    i=0;
+    idm=i+1;
+    for(i=1;i<ARM_FREEDOM-1;i++){
+      if(max < CRANEJointPos[i]){
+	fourth = third;
+	third = second;
+	second = max;
+	max = CRANEJointPos[i];
+	idf = idt;      
+	idt = ids;      
+	ids = idm;
+	idm = i+1;//mにidを入れるためi+1
+      }
+      else if(max > CRANEJointPos[i] && second <CRANEJointPos[i])
+	{
+	  fourth = third;
+	  third = second;
+	  second = CRANEJointPos[i];
+	  idf = idt;
+	  idt = ids;
+	  ids = i+1;
+	}
+      else if(max > CRANEJointPos[i] && second > CRANEJointPos[i] && third < CRANEJointPos[i])
+	{
+	  fourth = third;
+	  third = CRANEJointPos[i];
+	  idf = idt;
+	  idt = i+1;
+	}
+      else if(max > CRANEJointPos[i] && second > CRANEJointPos[i] && third > CRANEJointPos[i])
+	{
+	  fourth = CRANEJointPos[i];
+	  idf = i+1;
+	}
+    } 
+  }
+
   Judge = crane.JointLimitJudgement();
-  if(Judge != TRUE){
+  if(Judge != true){
     std::cout<<"ERROR : Joint Soft Limit Over"<<std::endl<<std::endl;
     return RETURN_CODE(JARA_ARM::NG,"オペレーション拒否");
   }
+
   if(c_Mode==1||c_Mode==2){
-  crane.ArmAction();
+    crane.setCRANESpeeddata(idm,spdRatio_Middle);
+    crane.setCRANESpeeddata(ids,spdRatio_Middle*(second/max));
+    crane.setCRANESpeeddata(idt,spdRatio_Middle*(third/max));
+    crane.setCRANESpeeddata(idf,spdRatio_Middle*(fourth/max));
+    crane.setCRANEJointdata(targetJointPos);
+    crane.ArmAction();
   }
-
-  //シミュレーション用
-  for(int i=0;i<4;i++){
-    C_jointPoint[i] = jointPoints[i];
-  }
-
+  
   simcode = 206;
   std::cout<<"Success"<<std::endl<<std::endl;
   
@@ -295,8 +415,9 @@ JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::movePTP
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::openGripper()
 {
   std::cout << "OpenGripper" << std::endl;
-  if(c_Mode==1||c_Mode==2)
+  if(c_Mode==1||c_Mode==2){
     crane.CRANEopenGripper();
+  }
   std::cout<<"Success"<<std::endl<<std::endl;
   simcode=205;
   return RETURN_CODE(JARA_ARM::OK,"オペレーションを正常に受け付け");
@@ -422,14 +543,17 @@ JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::setSpee
   std::cout << "setSpeed = " << spdRatio << "%" << std::endl;
   if(c_Mode==1||c_Mode==2)
     {
-      double speed;
-      speed = (double)spdRatio; 
+      spdRatio_Middle = (double)spdRatio; 
+      
       if (spdRatio >= 1 && spdRatio <= 100){
-	crane.setCRANESpeeddata(speed);
+	for(int i=0;i<ARM_FREEDOM;i++){
+	  crane.setCRANESpeeddata(i,spdRatio_Middle);
+	}
       }
+      
       else{
 	std::cout << "ERROR : Wrong Value" << std::endl << std::endl;
-        return RETURN_CODE(JARA_ARM::VALUE_ERR,"引数が不正");
+	return RETURN_CODE(JARA_ARM::VALUE_ERR,"引数が不正");
       }
     }
   else
@@ -490,13 +614,12 @@ JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::getHome
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::goHome()
 {
   int Judge;
-
   std::cout<<"GoHome"<<std::endl;
   if(c_Mode==1||c_Mode==2){    
     crane.setCRANEJointdata(HomeMotorPosition);
 
     Judge = crane.JointLimitJudgement();
-    if(Judge != TRUE){
+    if(Judge != true){
       std::cout<<"ERROR : Joint Soft Limit Over"<<std::endl<<std::endl;
       return RETURN_CODE(JARA_ARM::NG,"オペレーション拒否");
     }

@@ -85,6 +85,7 @@ RTC::ReturnCode_t RT_CRANE_RTC::onInitialize()
   // Bind variables and configuration variable
   bindParameter("port_name", m_port_name, "/dev/ttyUSB0");
   // </rtc-template>
+
   
   return RTC::RTC_OK;
 }
@@ -113,8 +114,11 @@ RTC::ReturnCode_t RT_CRANE_RTC::onShutdown(RTC::UniqueId ec_id)
 
 RTC::ReturnCode_t RT_CRANE_RTC::onActivated(RTC::UniqueId ec_id)
 {
-  crane.openSerialPort(m_port_name.c_str());
-  std::cout << "openSerialPort" << std::endl;
+  if(!crane.OpenCOMDevice(m_port_name.c_str()))
+    {
+      std::cout << "OpenCOMDevice Error!" << std::endl;
+    }
+
   crane.initArm();
   std::cout << "initArm" << std::endl << std::endl;
   return RTC::RTC_OK;
@@ -124,6 +128,7 @@ RTC::ReturnCode_t RT_CRANE_RTC::onActivated(RTC::UniqueId ec_id)
 RTC::ReturnCode_t RT_CRANE_RTC::onDeactivated(RTC::UniqueId ec_id)
 {
   crane.ServoOnOff(0);
+  crane.CloseCOMDevice();
   return RTC::RTC_OK;
 }
 

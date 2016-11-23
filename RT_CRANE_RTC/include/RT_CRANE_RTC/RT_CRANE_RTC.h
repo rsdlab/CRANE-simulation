@@ -19,6 +19,8 @@
 #include "ManipulatorCommonInterface_CommonSVC_impl.h"
 #include "ManipulatorCommonInterface_MiddleLevelSVC_impl.h"
 
+#include "Crane.h"
+
 // </rtc-template>
 
 // Service Consumer stub headers
