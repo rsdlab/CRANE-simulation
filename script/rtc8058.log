@@ -1,9 +1,0 @@
-[0m[34mNov 23 07:20:19.107 INFO: manager: [0m1.1.2
-[0m[34mNov 23 07:20:19.107 INFO: manager: [0mCopyright (C) 2003-2014
-[0m[34mNov 23 07:20:19.107 INFO: manager: [0m  Noriaki Ando
-[0m[34mNov 23 07:20:19.107 INFO: manager: [0m  Intelligent Systems Research Institute, AIST
-[0m[34mNov 23 07:20:19.107 INFO: manager: [0mManager starting.
-[0m[34mNov 23 07:20:19.107 INFO: manager: [0mStarting local logging.
-[0m[33mNov 23 07:20:19.112 WARNING: NamingOnCorba: [0mNo endpoint for the CORBA naming service (localhost) was found.
-[0m[34mNov 23 07:20:19.112 INFO: NamingManager: [0mNameServer connection succeeded: corba/localhost
-[0m[34mNov 23 07:20:19.112 INFO: ManagerServant: [0mMaster manager not found
