@@ -173,4 +173,4 @@ public:
 /**************** extern 宣言 *****************/
 extern CRANE crane;
 
-#endif//__DEFRETURNID_H__
+#endif//__CRANE_H__
