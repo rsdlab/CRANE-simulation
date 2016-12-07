@@ -14,8 +14,8 @@ cd build
 cmake ..
 make
 
-#RT_CRANE_RTCのbuild
-cd ../../RT_CRANE_RTC/
+#CraneplusRTCのbuild
+cd ../../CraneplusRTC/
 mkdir build
 cd build
 cmake ..

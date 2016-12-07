@@ -289,6 +289,7 @@ RTC::ReturnCode_t ManipulatorControlSample::onExecute(RTC::UniqueId ec_id)
     {
       JARA_ARM::ULONG angleRatio;
       std::cout << "開度を入力してください 1~100[%]" << std::endl;
+      std::cout << ">>";
       std::cin >> angleRatio;
       std::cout << std::endl; 
       
@@ -324,7 +325,7 @@ RTC::ReturnCode_t ManipulatorControlSample::onExecute(RTC::UniqueId ec_id)
   else if(c == 9)
     {
       std::cout << "END" << std::endl;
-      std::cout << "eclipseでシステムをDeactivateしてください" << std::endl<<std::endl;
+      std::cout << "システムをDeactivateしてください" << std::endl<<std::endl;
       deactivate(ec_id);
     }
   

@@ -6,8 +6,6 @@
  */
 
 #include "ManipulatorCommonInterface_CommonSVC_impl.h"
-#include "ChoreonoidCRANEControllerRTC.h"
-#include "ChoreonoidControl.h"
 #include "Craneplus.h"
 #include "returnID.h"
 
@@ -43,30 +41,28 @@ JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_CommonSVC_impl::getActi
   alarms->length(3);
   std::cout << "GetActiveAlarm" << std::endl;
   std::cout << "ERROR : コマンド未実装" << std::endl << std::endl;
+
   return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED,"未実装のコマンド");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_CommonSVC_impl::getFeedbackPosJoint(JARA_ARM::JointPos_out pos)
 {
   std::cout << "GetFeedbackPosJoint" << std::endl;
-  
+
+  double CRANEJointPos[ARM_FREEDOM-1];
   pos = new JARA_ARM::JointPos;
   pos->length(ARM_FREEDOM);
-  
-  if(c_Mode==1||c_Mode==2)
-    {
-      double CRANEJointPos[ARM_FREEDOM-1];
-      crane.getCRANEJointdata(CRANEJointPos);
-      std::cout << "実機の角度" << std::endl;
-      for(int i = 0;i<ARM_FREEDOM;i++)
-	{
-	  pos[i] = CRANEJointPos[i];
-	  if(i!=4)//グリッパは表示しない
-	    std::cout << "pos["<<i<<"] = " << pos[i] << "[°]" << std::endl;
-	}
-    }
-  std::cout << "Success" << std::endl << std::endl;
 
+  crane.getCRANEJointdata(CRANEJointPos);
+
+  for(int i = 0;i<ARM_FREEDOM;i++)
+    {
+      pos[i] = CRANEJointPos[i];
+      if(i!=4)//グリッパは表示しない
+	std::cout << "pos["<<i<<"] = " << pos[i] << "[°]" << std::endl;
+    }
+  
+  std::cout << "Success" << std::endl << std::endl;
   return RETURN_CODE(JARA_ARM::OK,"オペレーションを正常に受け付け");
 }
 
@@ -97,20 +93,19 @@ JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_CommonSVC_impl::getSoft
 {
   std::cout<<"getSoftLimitJoint"<<std::endl;
   
-
+  JLimit JointLimit[ARM_FREEDOM-1];
   softLimit=new JARA_ARM::LimitSeq;
   softLimit->length(ARM_FREEDOM);
-  JLimit JointLimit[ARM_FREEDOM-1];
   
   for(int i=0;i<ARM_FREEDOM-1;i++){
-    crane.getCRANEJointLimit(JointLimit);
-      }
-  
+   crane.getCRANEJointLimit(JointLimit);
+  }
+
   for(int i=0;i<=3;i++){
     std::cout << "JointLimit["<<i<<"].Upper =" << JointLimit[i].Upper << std::endl; 
     std::cout << "JointLimit["<<i<<"].Lower =" << JointLimit[i].Lower << std::endl;  
   }
-  
+
   (*softLimit)[0].upper=(double)JointLimit[0].Upper;
   (*softLimit)[0].lower=(double)JointLimit[0].Lower;
   (*softLimit)[1].upper=(double)JointLimit[1].Upper;
@@ -119,9 +114,10 @@ JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_CommonSVC_impl::getSoft
   (*softLimit)[2].lower=(double)JointLimit[2].Lower;
   (*softLimit)[3].upper=(double)JointLimit[3].Upper;
   (*softLimit)[3].lower=(double)JointLimit[3].Lower;
-
-
+  
+  
   std::cout<<"Success"<<std::endl<<std::endl;
+
   return RETURN_CODE(JARA_ARM::OK,"オペレーションを正常に受け付け");
 }
 
@@ -129,7 +125,8 @@ JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_CommonSVC_impl::getStat
 {
   std::cout << "getState" << std::endl;
   std::cout << "コマンド未実装" << std::endl << std::endl;
-  return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED,"未実装のコマンド");
+
+  return RETURN_CODE(JARA_ARM::OK,"オペレーションを正常に受け付け");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_CommonSVC_impl::servoOFF()
@@ -138,12 +135,10 @@ JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_CommonSVC_impl::servoOF
   int torque = 0;
   std::cout<<"ServoOFF (SERVO_OFF)"<<std::endl;  
   
-  if(c_Mode==1||c_Mode==2){
-    crane.ServoOnOff(torque);
-  }
-
+  crane.ServoOnOff(torque);
+  
   std::cout<<"Success"<<std::endl<<std::endl;
-  simcode = 102;
+
   return RETURN_CODE(JARA_ARM::OK,"オペレーションを正常に受け付け");
 }
 
@@ -152,12 +147,11 @@ JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_CommonSVC_impl::servoON
 
   int torque = 1;
   std::cout<<"ServoON (SERVO_ON)"<<std::endl;
-  if(c_Mode==1||c_Mode==2){
-    crane.ServoOnOff(torque);
-  }
+
+  crane.ServoOnOff(torque);
   
   std::cout<<"Success"<<std::endl<<std::endl;
-  simcode = 101;
+
   return RETURN_CODE(JARA_ARM::OK,"オペレーションを正常に受け付け");
 }
 
@@ -190,9 +184,9 @@ JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_CommonSVC_impl::setSoft
     }
 
   std::cout<<"Success"<<std::endl<<std::endl;  
+
   return RETURN_CODE(JARA_ARM::OK,"オペレーションを正常に受け付け");
 }
-
 
 
 // End of example implementational code

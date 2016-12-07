@@ -8,7 +8,7 @@
  */
 
 #include "ChoreonoidCRANEControllerRTC.h"
-#include "Crane.h"
+#include "Craneplus.h"
 #include "ChoreonoidControl.h"
 
 // Module specification

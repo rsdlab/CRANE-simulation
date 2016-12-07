@@ -1,0 +1,15 @@
+[0m[34mDec 07 05:00:38.079 INFO: manager: [0m1.1.2
+[0m[34mDec 07 05:00:38.079 INFO: manager: [0mCopyright (C) 2003-2014
+[0m[34mDec 07 05:00:38.079 INFO: manager: [0m  Noriaki Ando
+[0m[34mDec 07 05:00:38.079 INFO: manager: [0m  Intelligent Systems Research Institute, AIST
+[0m[34mDec 07 05:00:38.079 INFO: manager: [0mManager starting.
+[0m[34mDec 07 05:00:38.079 INFO: manager: [0mStarting local logging.
+[0m[33mDec 07 05:00:38.084 WARNING: NamingOnCorba: [0mNo endpoint for the CORBA naming service (localhost) was found.
+[0m[34mDec 07 05:00:38.084 INFO: NamingManager: [0mNameServer connection succeeded: corba/localhost
+[0m[34mDec 07 05:00:38.085 INFO: ManagerServant: [0mMaster manager not found
+[0m[33mDec 07 05:02:33.410 WARNING: SdoServiceAdmin: [0mNo available SDO service in the factory: 
+[0m[33mDec 07 05:02:33.411 WARNING: SdoServiceAdmin: [0mNo available SDO service in the factory: IDL:OpenRTM/ComponentObserver:1.0
+[0m[34mDec 07 05:02:40.771 INFO: ManipulatorCommonInterface_Common: [0minterface matched with old descriptor: port.JARA_ARM::ManipulatorCommonInterface_Common.ManipulatorCommonInterface_Common
+[0m[34mDec 07 05:02:47.010 INFO: ManipulatorCommonInterface_Middle: [0minterface matched with old descriptor: port.JARA_ARM::ManipulatorCommonInterface_Middle.ManipulatorCommonInterface_Middle
+[0m[34mDec 07 05:37:42.258 INFO: ManipulatorCommonInterface_Common: [0minterface matched with old descriptor: port.JARA_ARM::ManipulatorCommonInterface_Common.ManipulatorCommonInterface_Common
+[0m[34mDec 07 05:37:42.258 INFO: ManipulatorCommonInterface_Middle: [0minterface matched with old descriptor: port.JARA_ARM::ManipulatorCommonInterface_Middle.ManipulatorCommonInterface_Middle
