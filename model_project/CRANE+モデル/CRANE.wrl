@@ -186,7 +186,7 @@ DEF CRANE Humanoid {
 	 jointType "rotate"
 	 jointAxis 0 0 1
 	 jointId 0
-	 translation 0 0 0.0479
+	 translation 0 0.0125 0.0479
 	 rotation 0 0 1 0
 	 ulimit 2.617993878
 	 llimit -2.617993878
