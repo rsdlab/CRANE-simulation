@@ -13,7 +13,7 @@ Craneplus::Craneplus()
     Writedata[i].Torque = 0;
     ReadAngle[i] = 0;
     }
- 
+
   CRANEJointLimit[0].Upper = Angle1_LimitMax;
   CRANEJointLimit[0].Lower = Angle1_LimitMin;
   CRANEJointLimit[1].Upper = Angle2_LimitMax;
@@ -29,7 +29,7 @@ Craneplus::Craneplus()
   CRANECartesianLimit.y.Lower = Y_LimitMin;
   CRANECartesianLimit.z.Upper = Z_LimitMax;
   CRANECartesianLimit.z.Lower = Z_LimitMin;
-
+ 
   fd = 0;
   bzero(&newtio, sizeof(newtio)); //initialize
 }

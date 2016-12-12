@@ -51,7 +51,6 @@ double oldPos[5];
 double JointPos[ARM_FREEDOM-1];
 const double pgain[5] = {200, 200, 150, 220, 100};
 const double dgain[5] = {(pgain[0]/0.6)*0.125, (pgain[1]/0.6)*0.125, (pgain[2]/0.6)*0.125, (pgain[3]/0.6)*0.125, (pgain[4]/0.6)*0.125};
-int clock_start;
 double sec;
 double micro;
 double duration;
@@ -152,7 +151,6 @@ RTC::ReturnCode_t ChoreonoidCRANEControllerRTC::onActivated(RTC::UniqueId ec_id)
   std::cout << "initArm" << std::endl;
   
   simcode = 101;
-  clock_start = 0;
   
   m_torque.data.length(5);
   m_angleIn.read();
@@ -178,12 +176,11 @@ RTC::ReturnCode_t ChoreonoidCRANEControllerRTC::onDeactivated(RTC::UniqueId ec_i
 
 RTC::ReturnCode_t ChoreonoidCRANEControllerRTC::onExecute(RTC::UniqueId ec_id)
 {
+ 
   if(c_Mode == 0||c_Mode == 2)
     {
       ActCommand();
     }
-
-  clock_start = 1;
 
   return RTC::RTC_OK;
 }
@@ -241,32 +238,30 @@ switch(simcode)
     case(101)://ServoON or 現在位置の維持に使用**************************************************
       if(m_angleIn.isNew()){
 	m_angleIn.read();
-	if(clock_start !=0){
-	  gettimeofday(&end, NULL);
-	  sec = (double)(end.tv_sec - start.tv_sec);
-	  micro = (double)(end.tv_usec - start.tv_usec);
-	  duration = sec + micro / 1000.0 / 1000.0;
+	gettimeofday(&end, NULL);
+	sec = (double)(end.tv_sec - start.tv_sec);
+	micro = (double)(end.tv_usec - start.tv_usec);
+	duration = sec + micro / 1000.0 / 1000.0;
 	
 	gettimeofday(&start, NULL);
-      }
-      for(size_t i=0; i < m_angle.data.length(); ++i)
-	{
-	  nowPos[i] =  m_angle.data[i];
-	}
-      
-      for(size_t j=0; j < m_torque.data.length(); ++j)
-	{
-	  deltaPos[j] = targetPos[j] - nowPos[j];
-	  waydeltaPos[j] = deltaPos[j]*60/(RPM*2*M_PI);
-	  velocity[j] = (nowPos[j]-oldPos[j])/(duration);
-	  m_torque.data[j] =  waydeltaPos[j]*pgain[j] + (0.0 - velocity[j])*dgain[j];
-	  oldPos[j] = nowPos[j];
-	  if(isnan(m_torque.data[j])){
-	    m_torque.data[j] = 0;
+	for(size_t i=0; i < m_angle.data.length(); ++i)
+	  {
+	    nowPos[i] =  m_angle.data[i];
 	  }
-	}
-
-      m_torqueOut.write();
+      
+	for(size_t j=0; j < m_torque.data.length(); ++j)
+	  {
+	    deltaPos[j] = targetPos[j] - nowPos[j];
+	    waydeltaPos[j] = deltaPos[j]*60/(RPM*2*M_PI);
+	    velocity[j] = (nowPos[j]-oldPos[j])/(duration);
+	    m_torque.data[j] =  waydeltaPos[j]*pgain[j] + (0.0 - velocity[j])*dgain[j];
+	    oldPos[j] = nowPos[j];
+	    if(isnan(m_torque.data[j])){
+	      m_torque.data[j] = 0;
+	    }
+	  }
+	
+	m_torqueOut.write();
       }
       break;
 
@@ -277,34 +272,32 @@ switch(simcode)
      
       if(m_angleIn.isNew()){
 	m_angleIn.read();
-	if(clock_start !=0){
-	  gettimeofday(&end, NULL);
-	  sec = (double)(end.tv_sec - start.tv_sec);
-	  micro = (double)(end.tv_usec - start.tv_usec);
-	  duration = sec + micro / 1000.0 / 1000.0;
-	}
+	gettimeofday(&end, NULL);
+	sec = (double)(end.tv_sec - start.tv_sec);
+	micro = (double)(end.tv_usec - start.tv_usec);
+	duration = sec + micro / 1000.0 / 1000.0;     
 	gettimeofday(&start, NULL);
-      }
-
-      targetPos[4] = (Hand_LimitMin - 150)*M_PI/180;
-      for(size_t i=0; i < m_angle.data.length(); ++i)
-	{
-	  nowPos[i] =  m_angle.data[i];
-	}
-      
-      for(size_t j=0; j < m_torque.data.length(); ++j)
-	{
-	  deltaPos[j] = targetPos[j] - nowPos[j];
-	  waydeltaPos[j] = deltaPos[j]*60/(RPM*2*M_PI);
-	  velocity[j] = (nowPos[j]-oldPos[j])/(duration);
-	  m_torque.data[j] =  deltaPos[j]*pgain[j] + (0.0 - velocity[j])*dgain[j];
-	  oldPos[j] = nowPos[j];
-	  if(isnan(m_torque.data[j])){
-	    m_torque.data[j] = 0;
+	
+	targetPos[4] = (Hand_LimitMin - 150)*M_PI/180;
+	for(size_t i=0; i < m_angle.data.length(); ++i)
+	  {
+	    nowPos[i] =  m_angle.data[i];
 	  }
-	}
-      
-      m_torqueOut.write();
+	
+	for(size_t j=0; j < m_torque.data.length(); ++j)
+	  {
+	    deltaPos[j] = targetPos[j] - nowPos[j];
+	    waydeltaPos[j] = deltaPos[j]*60/(RPM*2*M_PI);
+	    velocity[j] = (nowPos[j]-oldPos[j])/(duration);
+	    m_torque.data[j] =  deltaPos[j]*pgain[j] + (0.0 - velocity[j])*dgain[j];
+	    oldPos[j] = nowPos[j];
+	    if(isnan(m_torque.data[j])){
+	      m_torque.data[j] = 0;
+	    }
+	  }
+	
+	m_torqueOut.write();
+      }
       break;
 
     case(202)://getFeedbackPosCartesian**********************************************************
@@ -316,205 +309,194 @@ switch(simcode)
         
       if(m_angleIn.isNew()){
 	m_angleIn.read();
-	if(clock_start !=0){
-	  gettimeofday(&end, NULL);
-	  sec = (double)(end.tv_sec - start.tv_sec);
-	  micro = (double)(end.tv_usec - start.tv_usec);
-	  duration = sec + micro / 1000.0 / 1000.0;
-	  std::cout << "duration = " << duration << std::endl;
-	}
+	
+	gettimeofday(&end, NULL);
+	sec = (double)(end.tv_sec - start.tv_sec);
+	micro = (double)(end.tv_usec - start.tv_usec);
+	duration = sec + micro / 1000.0 / 1000.0;
+	std::cout << "duration = " << duration << std::endl;
 	gettimeofday(&start, NULL);
+	
+	std::cout << "シミュレータのアーム" << std::endl;
+	for(size_t i=0; i < m_angle.data.length(); ++i)
+	  {
+	    nowPos[i] =  m_angle.data[i];
+	    std::cout << "nowPos["<<i<<"] = " << nowPos[i]*rad << "[deg]" <<  std::endl;
+	  } 
+	
+	x = cos(nowPos[0]) * (r1*cos(nowPos[1] + M_PI/2) + r2*cos(nowPos[1] + M_PI/2 + nowPos[2]) + r3*cos(nowPos[1] + M_PI/2 + nowPos[2] + nowPos[3]))+14.5;//[mm]
+	y = sin(nowPos[0]) * (r1*cos(nowPos[1] + M_PI/2) + r2*cos(nowPos[1] + M_PI/2 + nowPos[2]) + r3*cos(nowPos[1] + M_PI/2 + nowPos[2] + nowPos[3]));//[mm]
+	z =r1*sin(nowPos[1] + M_PI/2) + r2*sin(nowPos[1] + M_PI/2 + nowPos[2]) + r3*sin(nowPos[1] + M_PI/2 + nowPos[2] + nowPos[3])+45.4;//[mm]
+	
+	Rz = (nowPos[1]+M_PI/2 + nowPos[2] + nowPos[3]);//[rad]
+	
+	std::cout<<" x  : "<< x << "[mm]" <<std::endl;
+	std::cout<<" y  : "<< y << "[mm]" <<std::endl;
+	std::cout<<" z  : "<< z << "[mm]" <<std::endl;
+	std::cout<<" Rz : "<< Rz*rad << "[deg]" << std::endl;
       }
-
-      std::cout << "シミュレータのアーム" << std::endl;
-      for(size_t i=0; i < m_angle.data.length(); ++i)
-	{
-	  nowPos[i] =  m_angle.data[i];
-	  std::cout << "nowPos["<<i<<"] = " << nowPos[i]*rad << "[deg]" <<  std::endl;
-	} 
-
-      x = cos(nowPos[0]) * (r1*cos(nowPos[1] + M_PI/2) + r2*cos(nowPos[1] + M_PI/2 + nowPos[2]) + r3*cos(nowPos[1] + M_PI/2 + nowPos[2] + nowPos[3]))+14.5;//[mm]
-      y = sin(nowPos[0]) * (r1*cos(nowPos[1] + M_PI/2) + r2*cos(nowPos[1] + M_PI/2 + nowPos[2]) + r3*cos(nowPos[1] + M_PI/2 + nowPos[2] + nowPos[3]));//[mm]
-      z =r1*sin(nowPos[1] + M_PI/2) + r2*sin(nowPos[1] + M_PI/2 + nowPos[2]) + r3*sin(nowPos[1] + M_PI/2 + nowPos[2] + nowPos[3])+45.4;//[mm]
-		
-      Rz = (nowPos[1]+M_PI/2 + nowPos[2] + nowPos[3]);//[rad]
-
-      std::cout<<" x  : "<< x << "[mm]" <<std::endl;
-      std::cout<<" y  : "<< y << "[mm]" <<std::endl;
-      std::cout<<" z  : "<< z << "[mm]" <<std::endl;
-      std::cout<<" Rz : "<< Rz*rad << "[deg]" << std::endl;
-      
       simcode = 101;
       break;
-
+      
     case(203)://moveGripper**********************************************************************
       if(m_angleIn.isNew()){
 	m_angleIn.read();
-	if(clock_start !=0){
-	  gettimeofday(&end, NULL);
-	  sec = (double)(end.tv_sec - start.tv_sec);
-	  micro = (double)(end.tv_usec - start.tv_usec);
-	  duration = sec + micro / 1000.0 / 1000.0;
-	}
+	gettimeofday(&end, NULL);
+	sec = (double)(end.tv_sec - start.tv_sec);
+	micro = (double)(end.tv_usec - start.tv_usec);
+	duration = sec + micro / 1000.0 / 1000.0;
 	gettimeofday(&start, NULL);      
-
-      targetPos[4] = (Hand_LimitMax-Hand_LimitMin)*(C_angleRatio*0.01)+Hand_LimitMin;//angleRatioは%で代入、Minのほうがサーボモーターに送る値は大きい
-      targetPos[4] = (targetPos[4]-150)*deg;
-      for(size_t i=0; i < m_angle.data.length(); ++i)
-	{
-	  nowPos[i] =  m_angle.data[i];
-	}
-      
-      for(size_t j=0; j < m_torque.data.length(); ++j)
-	{
-	  deltaPos[j] = targetPos[j] - nowPos[j];
-	  velocity[j] = (nowPos[j]-oldPos[j])/(duration);	  
-	  m_torque.data[j] =  deltaPos[j]*pgain[j] + (0.0 - velocity[j])*pgain[j];
-	  oldPos[j] = nowPos[j];
-	  if(isnan(m_torque.data[j])){
-	    m_torque.data[j] = 0;
+	
+	targetPos[4] = (Hand_LimitMax-Hand_LimitMin)*(C_angleRatio*0.01)+Hand_LimitMin;//angleRatioは%で代入、Minのほうがサーボモーターに送る値は大きい
+	targetPos[4] = (targetPos[4]-150)*deg;
+	for(size_t i=0; i < m_angle.data.length(); ++i)
+	  {
+	    nowPos[i] =  m_angle.data[i];
 	  }
-	}
-      
-      m_torqueOut.write();
+	
+	for(size_t j=0; j < m_torque.data.length(); ++j)
+	  {
+	    deltaPos[j] = targetPos[j] - nowPos[j];
+	    velocity[j] = (nowPos[j]-oldPos[j])/(duration);	  
+	    m_torque.data[j] =  deltaPos[j]*pgain[j] + (0.0 - velocity[j])*pgain[j];
+	    oldPos[j] = nowPos[j];
+	    if(isnan(m_torque.data[j])){
+	      m_torque.data[j] = 0;
+	    }
+	  }
+	
+	m_torqueOut.write();
       }
       break;
-
+      
     case(204)://movePTPCartesianAbs*********************************************************
       if(m_angleIn.isNew()){
 	m_angleIn.read();
-	if(clock_start !=0){
-	  gettimeofday(&end, NULL);
-	  sec = (double)(end.tv_sec - start.tv_sec);
-	  micro = (double)(end.tv_usec - start.tv_usec);
-	  duration = sec + micro / 1000.0 / 1000.0;
-	}
+	gettimeofday(&end, NULL);
+	sec = (double)(end.tv_sec - start.tv_sec);
+	micro = (double)(end.tv_usec - start.tv_usec);
+	duration = sec + micro / 1000.0 / 1000.0;
 	gettimeofday(&start, NULL);
 
-      crane.kinematics(C_carPos[0][3],C_carPos[1][3],C_carPos[2][3],JointPos);
-
-      C_jointPoint[0] = JointPos[0];
-      C_jointPoint[1] = JointPos[1]-90;
-      C_jointPoint[2] = JointPos[2];
-      C_jointPoint[3] = JointPos[3];
-
-      simcode = 206;//movePTPJointAbsへ
+	crane.kinematics(C_carPos[0][3],C_carPos[1][3],C_carPos[2][3],JointPos);
+	
+	C_jointPoint[0] = JointPos[0];
+	C_jointPoint[1] = JointPos[1]-90;
+	C_jointPoint[2] = JointPos[2];
+	C_jointPoint[3] = JointPos[3];
+	
+	simcode = 206;//movePTPJointAbsへ
       }
       break;
-
+      
     case(205)://openGripper*********************************************************************
-
+      
       if(m_angleIn.isNew()){
 	m_angleIn.read();
-	if(clock_start !=0){
-	  gettimeofday(&end, NULL);
-	  sec = (double)(end.tv_sec - start.tv_sec);
-	  micro = (double)(end.tv_usec - start.tv_usec);
-	  duration = sec + micro / 1000.0 / 1000.0;
-	}
+	gettimeofday(&end, NULL);
+	sec = (double)(end.tv_sec - start.tv_sec);
+	micro = (double)(end.tv_usec - start.tv_usec);
+	duration = sec + micro / 1000.0 / 1000.0;
 	gettimeofday(&start, NULL);      
-
-     targetPos[4] = (Hand_LimitMax - 150)*M_PI/180;
-
-      for(size_t i=0; i < m_angle.data.length(); ++i)
-	{
-	  nowPos[i] =  m_angle.data[i];
-	}
-      
-      for(size_t j=0; j < m_torque.data.length(); ++j)
-	{
-	  deltaPos[j] = targetPos[j] - nowPos[j];
-	  waydeltaPos[j] = deltaPos[j]*60/(RPM*2*M_PI);
-	  velocity[j] = (nowPos[j]-oldPos[j])/(duration);
-	  m_torque.data[j] =  deltaPos[j]*pgain[j] + (0.0 - velocity[j])*dgain[j];
-	  oldPos[j] = nowPos[j];
-	  if(isnan(m_torque.data[j])){
-	    m_torque.data[j] = 0;
+	
+	targetPos[4] = (Hand_LimitMax - 150)*M_PI/180;
+	
+	for(size_t i=0; i < m_angle.data.length(); ++i)
+	  {
+	    nowPos[i] =  m_angle.data[i];
 	  }
-	}
-      
-      m_torqueOut.write();
+	
+	for(size_t j=0; j < m_torque.data.length(); ++j)
+	  {
+	    deltaPos[j] = targetPos[j] - nowPos[j];
+	    waydeltaPos[j] = deltaPos[j]*60/(RPM*2*M_PI);
+	    velocity[j] = (nowPos[j]-oldPos[j])/(duration);
+	    m_torque.data[j] =  deltaPos[j]*pgain[j] + (0.0 - velocity[j])*dgain[j];
+	    oldPos[j] = nowPos[j];
+	    if(isnan(m_torque.data[j])){
+	      m_torque.data[j] = 0;
+	    }
+	  }
+	
+	m_torqueOut.write();
       }
       break;
-
+      
     case(206)://movePTPJointAbs******************************************************************
-   
+      
       if(m_angleIn.isNew()){
 	m_angleIn.read();
-	if(clock_start !=0){
-	  gettimeofday(&end, NULL);
-	  sec = (double)(end.tv_sec - start.tv_sec);
-	  micro = (double)(end.tv_usec - start.tv_usec);
-	  duration = sec + micro / 1000.0 / 1000.0;
-	}
+	gettimeofday(&end, NULL);
+	sec = (double)(end.tv_sec - start.tv_sec);
+	micro = (double)(end.tv_usec - start.tv_usec);
+	duration = sec + micro / 1000.0 / 1000.0;
 	gettimeofday(&start, NULL);
-
+	
+	
+	targetPos[0] = C_jointPoint[0]*M_PI/180;
+	targetPos[1] = C_jointPoint[1]*M_PI/180;
+	targetPos[2] = C_jointPoint[2]*M_PI/180;
+	targetPos[3] = C_jointPoint[3]*M_PI/180;
+	
+	for(size_t i=0; i < m_angle.data.length(); ++i)
+	  {
+	    nowPos[i] =  m_angle.data[i];
 	  }
-      targetPos[0] = C_jointPoint[0]*M_PI/180;
-      targetPos[1] = C_jointPoint[1]*M_PI/180;
-      targetPos[2] = C_jointPoint[2]*M_PI/180;
-      targetPos[3] = C_jointPoint[3]*M_PI/180;
-
-      for(size_t i=0; i < m_angle.data.length(); ++i)
-	{
-	  nowPos[i] =  m_angle.data[i];
-	}
-      
-      for(size_t j=0; j < m_torque.data.length(); ++j)
-	{
-	  deltaPos[j] = targetPos[j] - nowPos[j];
-	  waydeltaPos[j] = deltaPos[j]*60/(RPM*2*M_PI);
-	  velocity[j] = (nowPos[j]-oldPos[j])/(duration);  
-	  m_torque.data[j] =  waydeltaPos[j]*pgain[j] + (0.0 - velocity[j])*dgain[j];
-	  oldPos[j] = nowPos[j];
-	  if(isnan(m_torque.data[j])){
-	    m_torque.data[j] = 0;
+	
+	for(size_t j=0; j < m_torque.data.length(); ++j)
+	  {
+	    deltaPos[j] = targetPos[j] - nowPos[j];
+	    waydeltaPos[j] = deltaPos[j]*60/(RPM*2*M_PI);
+	    velocity[j] = (nowPos[j]-oldPos[j])/(duration);  
+	    m_torque.data[j] =  waydeltaPos[j]*pgain[j] + (0.0 - velocity[j])*dgain[j];
+	    oldPos[j] = nowPos[j];
+	    if(isnan(m_torque.data[j])){
+	      m_torque.data[j] = 0;
+	    }
 	  }
+	m_torqueOut.write();
       }
-      m_torqueOut.write();
       break;
       
- case(207)://goHome*****************************************************************************
-   
+    case(207)://goHome*****************************************************************************
+      
       if(m_angleIn.isNew()){
 	m_angleIn.read();
-	if(clock_start !=0){
-	  gettimeofday(&end, NULL);
-	  sec = (double)(end.tv_sec - start.tv_sec);
-	  micro = (double)(end.tv_usec - start.tv_usec);
-	  duration = sec + micro / 1000.0 / 1000.0;
-	}
+	gettimeofday(&end, NULL);
+	sec = (double)(end.tv_sec - start.tv_sec);
+	micro = (double)(end.tv_usec - start.tv_usec);
+	duration = sec + micro / 1000.0 / 1000.0;
 	gettimeofday(&start, NULL);      
-
-      targetPos[0] = HomeMotorPosition[0]*deg;
-      targetPos[1] = HomeMotorPosition[1]*deg - M_PI/2;
-      targetPos[2] = HomeMotorPosition[2]*deg;
-      targetPos[3] = HomeMotorPosition[3]*deg;
-
-      for(size_t i=0; i < m_angle.data.length(); ++i)
-	{
-	  nowPos[i] =  m_angle.data[i];
-	}
-      
-      for(size_t j=0; j < m_torque.data.length(); ++j)
-	{
-	  deltaPos[j] = targetPos[j] - nowPos[j];
-	  waydeltaPos[j] = deltaPos[j]*60/(RPM*2*M_PI);
-	  velocity[j] = (nowPos[j]-oldPos[j])/(duration);	  
-	  m_torque.data[j] =  deltaPos[j]*pgain[j] + (0.0 - velocity[j])*dgain[j];
-	  oldPos[j] = nowPos[j];
-	  if(isnan(m_torque.data[j])){
-	    m_torque.data[j] = 0;
+	
+	targetPos[0] = HomeMotorPosition[0]*deg;
+	targetPos[1] = HomeMotorPosition[1]*deg - M_PI/2;
+	targetPos[2] = HomeMotorPosition[2]*deg;
+	targetPos[3] = HomeMotorPosition[3]*deg;
+	
+	for(size_t i=0; i < m_angle.data.length(); ++i)
+	  {
+	    nowPos[i] =  m_angle.data[i];
 	  }
-	}
-      
-      m_torqueOut.write();
+	
+	for(size_t j=0; j < m_torque.data.length(); ++j)
+	  {
+	    deltaPos[j] = targetPos[j] - nowPos[j];
+	    waydeltaPos[j] = deltaPos[j]*60/(RPM*2*M_PI);
+	    velocity[j] = (nowPos[j]-oldPos[j])/(duration);	  
+	    m_torque.data[j] =  deltaPos[j]*pgain[j] + (0.0 - velocity[j])*dgain[j];
+	    oldPos[j] = nowPos[j];
+	    if(isnan(m_torque.data[j])){
+	      m_torque.data[j] = 0;
+	    }
+	  }
+	
+	m_torqueOut.write();
       }
       break;
-   
+      
     }
-
-  return RTC::RTC_OK;
+ 
+ return RTC::RTC_OK;
 }
 
 
