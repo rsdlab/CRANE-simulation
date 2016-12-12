@@ -121,32 +121,6 @@ RTC::ReturnCode_t ManipulatorControlSample::onActivated(RTC::UniqueId ec_id)
   spdRation = m_Speed;//%
   m_ManipulatorCommonInterface_Middle->setSpeedJoint(spdRation);
 
-  /*リミット設定
-  //ジョイントソフトリミットの初期化(AX-12A対応)
-  JARA_ARM::LimitSeq softLimit;
-  softLimit.length(5);
-  softLimit[0].upper = 300;
-  softLimit[0].lower = 0;
-  softLimit[1].upper = 300;
-  softLimit[1].lower = 0;
-  softLimit[2].upper = 300;
-  softLimit[2].lower = 0;
-  softLimit[3].upper = 300;
-  softLimit[3].lower = 0;
-  m_ManipulatorCommonInterface_Common->setSoftLimitJoint(softLimit);
-
-  //範囲ソフトリミットの初期化(CRANE+対応)
-  JARA_ARM::LimitValue xLimit;
-  JARA_ARM::LimitValue yLimit;
-  JARA_ARM::LimitValue zLimit;
-  xLimit.upper = 329;
-  xLimit.lower = -300;
-  yLimit.upper = 314.5;
-  yLimit.lower = -314.5;
-  zLimit.upper = 359.9;
-  zLimit.lower = 0;
-  m_ManipulatorCommonInterface_Middle->setSoftLimitCartesian(xLimit, yLimit, zLimit);
-  */
 
   return RTC::RTC_OK;
 }

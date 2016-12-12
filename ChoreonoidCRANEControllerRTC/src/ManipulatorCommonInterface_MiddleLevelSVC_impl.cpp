@@ -208,7 +208,6 @@ JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::movePTP
   double third = 0;
   double fourth = 0;
 
-  std::cout << "moveLinearCartesianAbs" << std::endl;
 
   //Cartesianソフトリミット判定
   Judge = crane.CartesianLimitJudgement(carPoint.carPos[0][3],carPoint.carPos[1][3],carPoint.carPos[2][3]);

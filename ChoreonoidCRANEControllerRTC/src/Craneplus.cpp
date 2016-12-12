@@ -14,6 +14,22 @@ Craneplus::Craneplus()
     ReadAngle[i] = 0;
     }
  
+  CRANEJointLimit[0].Upper = Angle1_LimitMax;
+  CRANEJointLimit[0].Lower = Angle1_LimitMin;
+  CRANEJointLimit[1].Upper = Angle2_LimitMax;
+  CRANEJointLimit[1].Lower = Angle2_LimitMin;
+  CRANEJointLimit[2].Upper = Angle3_LimitMax;
+  CRANEJointLimit[2].Lower = Angle3_LimitMin;
+  CRANEJointLimit[3].Upper = Angle4_LimitMax;
+  CRANEJointLimit[3].Lower = Angle4_LimitMin;
+
+  CRANECartesianLimit.x.Upper = X_LimitMax;
+  CRANECartesianLimit.x.Lower = X_LimitMin;
+  CRANECartesianLimit.y.Upper = Y_LimitMax;
+  CRANECartesianLimit.y.Lower = Y_LimitMin;
+  CRANECartesianLimit.z.Upper = Z_LimitMax;
+  CRANECartesianLimit.z.Lower = Z_LimitMin;
+
   fd = 0;
   bzero(&newtio, sizeof(newtio)); //initialize
 }

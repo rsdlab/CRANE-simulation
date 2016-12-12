@@ -49,7 +49,7 @@ static const char* choreonoidcranecontrollerrtc_spec[] =
 double targetPos[5];
 double oldPos[5];
 double JointPos[ARM_FREEDOM-1];
-const double pgain[5] = {200, 200, 212, 220, 100};
+const double pgain[5] = {200, 200, 150, 220, 100};
 const double dgain[5] = {(pgain[0]/0.6)*0.125, (pgain[1]/0.6)*0.125, (pgain[2]/0.6)*0.125, (pgain[3]/0.6)*0.125, (pgain[4]/0.6)*0.125};
 int clock_start;
 double sec;

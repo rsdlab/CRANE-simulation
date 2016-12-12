@@ -4,7 +4,7 @@ COM="gnome-terminal -e"
 
 echo ""
 echo "ChoreonoidCRANEControllerRTCとManipulatorControlSampleを実行します。"
-echo "Choreonoidでプロジェクトファイル[CARNEsimulation]を読み込んでください。"
+echo "Choreonoidでプロジェクトファイル[CRANEsimulation]を読み込んでください。"
 echo ""
 
 #コンポーネント実行
