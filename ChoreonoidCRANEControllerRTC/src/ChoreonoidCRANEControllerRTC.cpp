@@ -339,6 +339,7 @@ switch(simcode)
       break;
       
     case(203)://moveGripper**********************************************************************
+      double handtarget;     
       if(m_angleIn.isNew()){
 	m_angleIn.read();
 	gettimeofday(&end, NULL);
@@ -347,8 +348,8 @@ switch(simcode)
 	duration = sec + micro / 1000.0 / 1000.0;
 	gettimeofday(&start, NULL);      
 	
-	targetPos[4] = (Hand_LimitMax-Hand_LimitMin)*(C_angleRatio*0.01)+Hand_LimitMin;//angleRatioは%で代入、Minのほうがサーボモーターに送る値は大きい
-	targetPos[4] = (targetPos[4]-150)*deg;
+        handtarget = (Hand_LimitMax-Hand_LimitMin)*(C_angleRatio*0.01)+Hand_LimitMin;//angleRatioは%で代入、Minのほうがサーボモーターに送る値は大きい
+	targetPos[4] = (handtarget-150)*deg;
 	for(size_t i=0; i < m_angle.data.length(); ++i)
 	  {
 	    nowPos[i] =  m_angle.data[i];
@@ -357,8 +358,9 @@ switch(simcode)
 	for(size_t j=0; j < m_torque.data.length(); ++j)
 	  {
 	    deltaPos[j] = targetPos[j] - nowPos[j];
-	    velocity[j] = (nowPos[j]-oldPos[j])/(duration);	  
-	    m_torque.data[j] =  deltaPos[j]*pgain[j] + (0.0 - velocity[j])*pgain[j];
+	    waydeltaPos[j] = deltaPos[j]*60/(RPM*2*M_PI);
+	    velocity[j] = (nowPos[j]-oldPos[j])/(duration);
+	    m_torque.data[j] =  deltaPos[j]*pgain[j] + (0.0 - velocity[j])*dgain[j];
 	    oldPos[j] = nowPos[j];
 	    if(isnan(m_torque.data[j])){
 	      m_torque.data[j] = 0;
