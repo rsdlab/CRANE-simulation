@@ -10,7 +10,6 @@
 #include "ChoreonoidCRANEControllerRTC.h"
 #include "Craneplus.h"
 #include "ChoreonoidControl.h"
-#include <sys/time.h>
 
 // Module specification
 // <rtc-template block="module_spec">
@@ -317,7 +316,7 @@ switch(simcode)
 	std::cout << "duration = " << duration << std::endl;
 	gettimeofday(&start, NULL);
 	
-	std::cout << "シミュレータのアーム" << std::endl;
+	std::cout << "Arm Simulation" << std::endl;
 	for(size_t i=0; i < m_angle.data.length(); ++i)
 	  {
 	    nowPos[i] =  m_angle.data[i];

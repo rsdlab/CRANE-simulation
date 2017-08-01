@@ -2,11 +2,18 @@
 #ifndef __CRANE_H__
 #define __CRANE_H__
 
-//数学定数の使用
+//Using Math Function
 #define _USE_MATH_DEFINES
 
-/********* includeファイル *********/
+/********* Include File *********/
 #include <cmath>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <math.h>
+#include <iostream>
+
+#ifdef linux
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/ioctl.h>
@@ -14,18 +21,14 @@
 #include <fcntl.h>
 #include <termios.h>
 #include <unistd.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <math.h>
-#include <iostream>
+#endif
 
-/********* 記号定数 *********/
+/********* Macro *********/
 
-// アーム自由度 (CRANE+ has 5 freedom)
+// Degree of Freedom of CRANE+ 
 #define ARM_FREEDOM	5
 
-// アームのリンクの長さ
+// Link Parameter 
 #define r1      83
 #define r2      93.5
 #define r3      138
