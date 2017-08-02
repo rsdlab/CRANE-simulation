@@ -12,8 +12,6 @@ extern double HomeMotorPosition[4];
 extern int c_Mode;
 extern int C_angleRatio;
 
-
-
 #endif//__DEFRETURNID_H_
  
 

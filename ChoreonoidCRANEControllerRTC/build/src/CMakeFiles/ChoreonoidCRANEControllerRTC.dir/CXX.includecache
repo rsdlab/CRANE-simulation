@@ -1,0 +1,40 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../include/ChoreonoidCRANEControllerRTC/Craneplus.h
+cmath
+-
+stdio.h
+-
+stdlib.h
+-
+string.h
+-
+math.h
+-
+iostream
+-
+sys/types.h
+-
+sys/stat.h
+-
+sys/ioctl.h
+-
+sys/time.h
+-
+fcntl.h
+-
+termios.h
+-
+unistd.h
+-
+
+/home/ken/github/CRANE-simulation/ChoreonoidCRANEControllerRTC/src/Craneplus.cpp
+Craneplus.h
+/home/ken/github/CRANE-simulation/ChoreonoidCRANEControllerRTC/src/Craneplus.h
+

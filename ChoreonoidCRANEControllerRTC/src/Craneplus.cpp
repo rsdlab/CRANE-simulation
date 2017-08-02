@@ -57,8 +57,10 @@ Craneplus crane;
 *************************************************/
 void Craneplus::serialWrite(uchar *buf, int length)
 {
+#ifdef linux
 	write(fd, buf, length);
 	tcflush(fd, TCOFLUSH);
+#endif
 }
 
 
@@ -105,6 +107,7 @@ void Craneplus::checkserial()
 {
   uchar recv[4];
 
+#ifdef linux
   read(fd, recv, 4);
 
   if((recv[0] & recv[1] & 0xff) != 0xff)
@@ -115,6 +118,7 @@ void Craneplus::checkserial()
     }
 
   tcflush(fd, TCIFLUSH);
+#endif
 }
 
 
@@ -263,6 +267,7 @@ void Craneplus::ReadArmAngle()
 *************************************************/
 int Craneplus::OpenCOMDevice(const char *SERIAL_PORT)
 {
+#ifdef linux
   dev = (char*)SERIAL_PORT;
   fd = open(dev, O_RDWR | O_NOCTTY );
   if(fd < 0){
@@ -284,6 +289,7 @@ int Craneplus::OpenCOMDevice(const char *SERIAL_PORT)
   
   tcflush(fd, TCIOFLUSH);
   tcsetattr(fd, TCSANOW, &newtio);
+#endif
 }
 
 
@@ -301,7 +307,9 @@ int Craneplus::OpenCOMDevice(const char *SERIAL_PORT)
 void Craneplus::CloseCOMDevice()
 {
   std::cout<<"Close COM Port"<<std::endl;
+#ifdef linux
   close(fd);
+#endif
 }
 
 

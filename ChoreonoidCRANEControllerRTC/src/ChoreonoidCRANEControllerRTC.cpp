@@ -228,12 +228,12 @@ RTC::ReturnCode_t ChoreonoidCRANEControllerRTC::ActCommand()
   double rad;
   double deg;
   
-  rad = 180/M_PI;    //radをdegへ
-  deg = M_PI/180;    //degをradへ
+  rad = 180/M_PI;    //rad to degree
+  deg = M_PI/180;    //degree to rad
 
 switch(simcode)
     {
-
+      
     case(101)://ServoON or 現在位置の維持に使用**************************************************
       if(m_angleIn.isNew()){
 	m_angleIn.read();
