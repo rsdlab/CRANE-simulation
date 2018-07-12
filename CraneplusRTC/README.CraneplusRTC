@@ -11,7 +11,7 @@
 #   --module-category=Category --module-comp-type=STATIC 
 #   --module-act-type=PERIODIC --module-max-inst=1 
 #   --config=port_name:string:/dev/ttyUSB0 
-#   --service-idl=/home/rsdlab/workspace/idl/ManipulatorCommonInterface/ManipulatorCommonInterface_Common.idl --service-idl=/home/rsdlab/workspace/idl/ManipulatorCommonInterface/ManipulatorCommonInterface_MiddleLevel.idl 
+#   --service-idl=C:\Users\rsdlab\workspace\idl\ManipulatorCommonInterface\ManipulatorCommonInterface_Common.idl --service-idl=C:\Users\rsdlab\workspace\idl\ManipulatorCommonInterface\ManipulatorCommonInterface_MiddleLevel.idl 
 #   --service=ManipulatorCommonInterface_Common:ManipulatorCommonInterface_Common:JARA_ARM::ManipulatorCommonInterface_Common 
 #   --service=ManipulatorCommonInterface_Middle:ManipulatorCommonInterface_Middle:JARA_ARM::ManipulatorCommonInterface_Middle 
 

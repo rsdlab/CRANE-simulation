@@ -1,4 +1,4 @@
-set(comp_srcs CraneplusRTC.cpp ManipulatorCommonInterface_CommonSVC_impl.cpp ManipulatorCommonInterface_MiddleLevelSVC_impl.cpp Craneplus.cpp)
+set(comp_srcs CraneplusRTC.cpp ManipulatorCommonInterface_CommonSVC_impl.cpp ManipulatorCommonInterface_MiddleLevelSVC_impl.cpp Craneplus.cpp SerialCommunication.cpp)
 set(standalone_srcs CraneplusRTCComp.cpp)
 
 if (DEFINED OPENRTM_INCLUDE_DIRS)

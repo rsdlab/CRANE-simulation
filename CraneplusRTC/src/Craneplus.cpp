@@ -1,6 +1,6 @@
 #include "Craneplus.h"
 
-//ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+//ƒRƒ“ƒXƒgƒ‰ƒNƒ^
 Craneplus::Craneplus()
 {
   for(int i=0;i<ARM_FREEDOM;i++){
@@ -13,7 +13,7 @@ Craneplus::Craneplus()
     Writedata[i].Torque = 0;
     ReadAngle[i] = 0;
     }
- 
+
   CRANEJointLimit[0].Upper = Angle1_LimitMax;
   CRANEJointLimit[0].Lower = Angle1_LimitMin;
   CRANEJointLimit[1].Upper = Angle2_LimitMax;
@@ -30,49 +30,79 @@ Craneplus::Craneplus()
   CRANECartesianLimit.z.Upper = Z_LimitMax;
   CRANECartesianLimit.z.Lower = Z_LimitMin;
 
-  fd = 0;
+#ifdef WIN32
+#else
   bzero(&newtio, sizeof(newtio)); //initialize
+  fd = 0;
+#endif
 }
 
-//ã‚°ãƒ­ãƒ¼ãƒãƒ«å¤‰æ•°å®£è¨€
+//ƒOƒ[ƒoƒ‹•Ï”éŒ¾
 Craneplus crane;
 
-/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
-/*                                  privateé–¢æ•°                                 */
-/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
+/*==============================================================================*/
+/*                                  privateŠÖ”                                 */
+/*==============================================================================*/
 
 
 /************************************************
 
 	void serialWrite(char *buf, int length)
 
-	æ¦‚è¦ï¼šã‚·ãƒªã‚¢ãƒ«é€šä¿¡ã§ãƒ‡ãƒ¼ã‚¿ã‚’é€ä¿¡ã™ã‚‹
+	ŠT—vFƒVƒŠƒAƒ‹’ÊM‚Åƒf[ƒ^‚ğ‘—M‚·‚é
 
-	å¼•æ•°ï¼š
-              *bufãƒ»ãƒ»ãƒ»é€ã‚‹ãƒ‡ãƒ¼ã‚¿ã®é…åˆ—
-              lengthãƒ»ãƒ»ãƒ»ãƒ‡ãƒ¼ã‚¿ã®é•·ã•
+	ˆø”F
+              *bufEEE‘—‚éƒf[ƒ^‚Ì”z—ñ
+              lengthEEEƒf[ƒ^‚Ì’·‚³
 	
-	æˆ»ã‚Šå€¤ï¼šãªã—
+	–ß‚è’lF‚È‚µ
 
 *************************************************/
 void Craneplus::serialWrite(uchar *buf, int length)
 {
+#ifdef WIN32
+	sc.SendMessage(buf, length);
+#else
 	write(fd, buf, length);
 	tcflush(fd, TCOFLUSH);
+
+#endif
 }
 
+/************************************************
+
+void serialRead(char *buf, int length)
+
+ŠT—vFƒVƒŠƒAƒ‹’ÊM‚Åƒf[ƒ^‚ğóM‚·‚é
+
+ˆø”F
+*bufEEE‘—‚éƒf[ƒ^‚Ì”z—ñ
+lengthEEEƒf[ƒ^‚Ì’·‚³
+
+–ß‚è’lF‚È‚µ
+
+*************************************************/
+void Craneplus::serialRead(uchar *buf, int length)
+{
+#ifdef WIN32
+	sc.ReceiveMessage(buf, length);
+#else
+	read(fd, buf, length);
+	tcflush(fd, TCIFLUSH);
+#endif
+}
 
 /************************************************
 
 	char calcCheckSum(char *buf, int Datasize)
 
-	æ¦‚è¦ï¼šã‚·ãƒªã‚¢ãƒ«é€šä¿¡ç”¨ã®ãƒã‚§ãƒƒã‚¯ã‚µãƒ ã‚’è¨ˆç®—ã™ã‚‹
+	ŠT—vFƒVƒŠƒAƒ‹’ÊM—p‚Ìƒ`ƒFƒbƒNƒTƒ€‚ğŒvZ‚·‚é
 
-	å¼•æ•°ï¼š
-              *bufãƒ»ãƒ»ãƒ»é€ã‚‹ãƒ‡ãƒ¼ã‚¿ã®é…åˆ—
-              Datasizeãƒ»ãƒ»ãƒ»ãƒ‡ãƒ¼ã‚¿ã®æ•°
+	ˆø”F
+              *bufEEE‘—‚éƒf[ƒ^‚Ì”z—ñ
+              DatasizeEEEƒf[ƒ^‚Ì”
 	
-	æˆ»ã‚Šå€¤ï¼šè¨ˆç®—çµæœ
+	–ß‚è’lFŒvZŒ‹‰Ê
 
 *************************************************/
 uchar Craneplus::calcCheckSum(uchar *buf, int Datasize)
@@ -94,27 +124,26 @@ uchar Craneplus::calcCheckSum(uchar *buf, int Datasize)
 
         void checkserial()
 
-	æ¦‚è¦ï¼šã‚·ãƒªã‚¢ãƒ«é€šä¿¡ã§ãã¦ã„ã‚‹ã‹ç¢ºèªã™ã‚‹
+	ŠT—vFƒVƒŠƒAƒ‹’ÊM‚Å‚«‚Ä‚¢‚é‚©Šm”F‚·‚é
 
-	å¼•æ•°ï¼šãªã—
+	ˆø”F‚È‚µ
 	
-	æˆ»ã‚Šå€¤ï¼šãªã—
+	–ß‚è’lF‚È‚µ
 
 *************************************************/
 void Craneplus::checkserial()
 {
   uchar recv[4];
 
-  read(fd, recv, 4);
+  serialRead(recv, 4);
 
-  if((recv[0] & recv[1] & 0xff) != 0xff)
-    {
-      printf("ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ãƒ‘ã‚±ãƒƒãƒˆãŒç•°å¸¸ã§ã™ã€‚æ­£ã—ãå‹•ä½œã—ã¦ã„ãªã„å¯èƒ½æ€§ãŒã‚ã‚Šã¾ã™ã€‚\n");
+  //if((recv[0] & recv[1] & 0xff) != 0xff)
+  //  {
+      //printf("ƒXƒe[ƒ^ƒXƒpƒPƒbƒg‚ªˆÙí‚Å‚·B³‚µ‚­“®ì‚µ‚Ä‚¢‚È‚¢‰Â”\«‚ª‚ ‚è‚Ü‚·B\n");
       //printf("return value:\n%02X %02X %02X %02X \n", recv[0], recv[1], recv[2], recv[3]);
       //exit(-1);
-    }
+  //  }
 
-  tcflush(fd, TCIFLUSH);
 }
 
 
@@ -122,13 +151,13 @@ void Craneplus::checkserial()
 
         void RegWrite(int id, ServoWrite data[])
 
-	æ¦‚è¦ï¼šDynamixelã®RegWriteã§ãƒ‡ãƒ¼ã‚¿ã‚’é€ä¿¡ã™ã‚‹
+	ŠT—vFDynamixel‚ÌRegWrite‚Åƒf[ƒ^‚ğ‘—M‚·‚é
 
-	å¼•æ•°ï¼š
-              idãƒ»ãƒ»ãƒ»ãƒ¢ãƒ¼ã‚¿ã®ID
-              dataãƒ»ãƒ»ãƒ»ãƒ‡ãƒ¼ã‚¿ã«ä»£å…¥ã™ã‚‹å€¤ 
+	ˆø”F
+              idEEEƒ‚[ƒ^‚ÌID
+              dataEEEƒf[ƒ^‚É‘ã“ü‚·‚é’l 
 	
-	æˆ»ã‚Šå€¤ï¼šãªã—
+	–ß‚è’lF‚È‚µ
 
 *************************************************/
 void Craneplus::RegWrite(int id, ServoWrite data[])
@@ -157,8 +186,9 @@ void Craneplus::RegWrite(int id, ServoWrite data[])
   buf[15] = (torque >> 8) & 0xff;
 
   buf[16] = calcCheckSum(buf, sizeof(buf));
-  
+
   serialWrite(buf, sizeof(buf));
+
   checkserial();
 }
 
@@ -167,11 +197,11 @@ void Craneplus::RegWrite(int id, ServoWrite data[])
 
         void Action(void)
 
-	æ¦‚è¦ï¼šDynamixelã®Actionã§ãƒ‡ãƒ¼ã‚¿ã‚’é€ä¿¡ã™ã‚‹
+	ŠT—vFDynamixel‚ÌAction‚Åƒf[ƒ^‚ğ‘—M‚·‚é
 
-	å¼•æ•°ï¼šãªã—
+	ˆø”F‚È‚µ
 	
-	æˆ»ã‚Šå€¤ï¼šãªã—
+	–ß‚è’lF‚È‚µ
 
 *************************************************/
 void Craneplus::Action(void)
@@ -193,12 +223,12 @@ void Craneplus::Action(void)
 
        void ReadServoAngle(int id, double ReadAngle)
 
-       æ¦‚è¦ï¼šã‚µãƒ¼ãƒœã®Angleå€¤ã‚’å—ã‘å–ã‚‹
+       ŠT—vFƒT[ƒ{‚ÌAngle’l‚ğó‚¯æ‚é
 
-       å¼•æ•°ï¼š
-             idãƒ»ãƒ»ãƒ»ã‚µãƒ¼ãƒœã®ID
+       ˆø”F
+             idEEEƒT[ƒ{‚ÌID
 
-       æˆ»ã‚Šå€¤ï¼šãªã—
+       –ß‚è’lF‚È‚µ
 
 *************************************************/
 void Craneplus::ReadServoAngle(int id, double ReadAngle[])
@@ -217,7 +247,7 @@ void Craneplus::ReadServoAngle(int id, double ReadAngle[])
 
   serialWrite(buf,sizeof(buf));
 
-  read(fd, recv, 8);
+  serialRead(recv, 8);
 
   ReadAngle[id-1] = 300.0 * (recv[5] | (recv[6] << 8)) / 1024.0;
 
@@ -228,11 +258,11 @@ void Craneplus::ReadServoAngle(int id, double ReadAngle[])
 
 	void ReadArmAngle()
 
-	æ¦‚è¦ï¼šã‚¢ãƒ¼ãƒ ã®å„é–¢ç¯€ã®Angleå€¤ã‚’å—ã‘å–ã‚‹
+	ŠT—vFƒA[ƒ€‚ÌŠeŠÖß‚ÌAngle’l‚ğó‚¯æ‚é
 
-	å¼•æ•°ï¼šãªã—
+	ˆø”F‚È‚µ
 	
-	æˆ»ã‚Šå€¤ï¼šãªã—
+	–ß‚è’lF‚È‚µ
 
 *************************************************/
 void Craneplus::ReadArmAngle()
@@ -246,24 +276,29 @@ void Craneplus::ReadArmAngle()
 }
 
 
-/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
-/*                                  publicé–¢æ•°                                  */
-/*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
+/*==============================================================================*/
+/*                                  publicŠÖ”                                  */
+/*==============================================================================*/
 
 /************************************************
 
 	int OpenCOMDevice(const char *SERIAL_PORT)
 
-	æ¦‚è¦ï¼šã‚·ãƒªã‚¢ãƒ«é€šä¿¡ã‚’é–‹å§‹ã™ã‚‹
+	ŠT—vFƒVƒŠƒAƒ‹’ÊM‚ğŠJn‚·‚é
 
-	å¼•æ•°ï¼šconst char *SERIAL_PORTãƒ»ãƒ»ãƒ»ãƒãƒ¼ãƒˆå
+	ˆø”Fconst char *SERIAL_PORTEEEƒ|[ƒg–¼
 	
-	æˆ»ã‚Šå€¤ï¼šãªã—
+	–ß‚è’lF‚È‚µ
 
 *************************************************/
 int Craneplus::OpenCOMDevice(const char *SERIAL_PORT)
 {
   dev = (char*)SERIAL_PORT;
+
+#ifdef WIN32
+  std::cout << "Open COM Port:" << dev << std::endl;
+  sc.Connect(SERIAL_PORT, 1000000);
+#else
   fd = open(dev, O_RDWR | O_NOCTTY );
   if(fd < 0){
     std::cout<<"Cannot Open expected COM Port!"<<std::endl;
@@ -271,7 +306,6 @@ int Craneplus::OpenCOMDevice(const char *SERIAL_PORT)
   }
   else{
     std::cout<<"Open COM Port:"<<dev<<std::endl;
-    return true;
   }
   
   newtio.c_cflag = B1000000 | CS8 | CREAD | CLOCAL;
@@ -284,6 +318,8 @@ int Craneplus::OpenCOMDevice(const char *SERIAL_PORT)
   
   tcflush(fd, TCIOFLUSH);
   tcsetattr(fd, TCSANOW, &newtio);
+#endif
+  return true;
 }
 
 
@@ -291,17 +327,21 @@ int Craneplus::OpenCOMDevice(const char *SERIAL_PORT)
 
 	int CloseCOMDevice()
 
-	æ¦‚è¦ï¼šã‚·ãƒªã‚¢ãƒ«é€šä¿¡ã‚’çµ‚äº†ã™ã‚‹
+	ŠT—vFƒVƒŠƒAƒ‹’ÊM‚ğI—¹‚·‚é
 
-	å¼•æ•°ï¼šãªã—
+	ˆø”F‚È‚µ
 	
-	æˆ»ã‚Šå€¤ï¼šãªã—
+	–ß‚è’lF‚È‚µ
 
 *************************************************/
 void Craneplus::CloseCOMDevice()
 {
-  std::cout<<"Close COM Port"<<std::endl;
+  std::cout<<"Close COM PortF"<<dev<<std::endl;
+#ifdef WIN32
+  sc.Disconnect();
+#else
   close(fd);
+#endif
 }
 
 
@@ -309,13 +349,13 @@ void Craneplus::CloseCOMDevice()
 
         void initServo(int id ,t_servo *servo)
 
-       æ¦‚è¦ï¼šã‚µãƒ¼ãƒœãƒ¢ãƒ¼ã‚¿ãƒ¼ã«é€ã‚‹ãƒ‡ãƒ¼ã‚¿ã®å¤‰æ•°ã‚’åˆæœŸåŒ–ã™ã‚‹é–¢æ•°
+       ŠT—vFƒT[ƒ{ƒ‚[ƒ^[‚É‘—‚éƒf[ƒ^‚Ì•Ï”‚ğ‰Šú‰»‚·‚éŠÖ”
 
-       å¼•æ•°ï¼š
-            idãƒ»ãƒ»ãƒ»ã‚µãƒ¼ãƒœãƒ¢ãƒ¼ã‚¿ãƒ¼ã®ID
-            dataãƒ»ãƒ»ãƒ»å„IDã®Dynamixelã«é€ã‚‹ãƒ‡ãƒ¼ã‚¿ã®å¤‰æ•°
+       ˆø”F
+            idEEEƒT[ƒ{ƒ‚[ƒ^[‚ÌID
+            dataEEEŠeID‚ÌDynamixel‚É‘—‚éƒf[ƒ^‚Ì•Ï”
 
-       æˆ»ã‚Šå€¤ï¼šãªã—
+       –ß‚è’lF‚È‚µ
 
 *************************************************/
 void Craneplus::initServo(int id, ServoWrite data[])
@@ -335,11 +375,11 @@ void Craneplus::initServo(int id, ServoWrite data[])
 
        void initArm()
 
-       æ¦‚è¦ï¼šã™ã¹ã¦ã®ã‚µãƒ¼ãƒœãƒ¢ãƒ¼ã‚¿ãƒ¼ã«é€ã‚‹ãƒ‡ãƒ¼ã‚¿ã®å¤‰æ•°ã‚’åˆæœŸåŒ–ã™ã‚‹é–¢æ•°
+       ŠT—vF‚·‚×‚Ä‚ÌƒT[ƒ{ƒ‚[ƒ^[‚É‘—‚éƒf[ƒ^‚Ì•Ï”‚ğ‰Šú‰»‚·‚éŠÖ”
 
-       å¼•æ•°ï¼šãªã—
+       ˆø”F‚È‚µ
 
-       æˆ»ã‚Šå€¤ï¼šãªã—
+       –ß‚è’lF‚È‚µ
 
 *************************************************/
 void Craneplus::initArm()
@@ -356,20 +396,20 @@ void Craneplus::initArm()
 
        void setCRANEJointdata(double JointPos[])
 
-       æ¦‚è¦ï¼šJointPos[]ã®å€¤ã‚’Writedata[].Angleã«æ›¸ãè¾¼ã‚€
+       ŠT—vFJointPos[]‚Ì’l‚ğWritedata[].Angle‚É‘‚«‚Ş
 
-       å¼•æ•°ï¼š
-            double JointPos[]ãƒ»ãƒ»ãƒ»ã‚»ãƒƒãƒˆã™ã‚‹è§’åº¦ãƒ‡ãƒ¼ã‚¿
+       ˆø”F
+            double JointPos[]EEEƒZƒbƒg‚·‚éŠp“xƒf[ƒ^
 
-       æˆ»ã‚Šå€¤ï¼šãªã—
+       –ß‚è’lF‚È‚µ
 
 *************************************************/
 void Craneplus::setCRANEJointdata(double JointPos[])
 {
   Writedata[0].Angle = 150 + JointPos[0];
-  Writedata[1].Angle = 240 - JointPos[1];
-  Writedata[2].Angle = 150 + JointPos[2];
-  Writedata[3].Angle = 150 + JointPos[3];
+  Writedata[1].Angle = 150 + JointPos[1];
+  Writedata[2].Angle = 150 - JointPos[2];
+  Writedata[3].Angle = 150 - JointPos[3];
 }
 
 
@@ -377,12 +417,12 @@ void Craneplus::setCRANEJointdata(double JointPos[])
 
        void setCRANESpeeddata(double spdRatio)
 
-       æ¦‚è¦ï¼šspdRatioã®å€¤ã‚’Writedata[].Speedã«æ›¸ãè¾¼ã‚€
+       ŠT—vFspdRatio‚Ì’l‚ğWritedata[].Speed‚É‘‚«‚Ş
 
-       å¼•æ•°ï¼š
-            double spdRatioãƒ»ãƒ»ãƒ»ã‚»ãƒƒãƒˆã™ã‚‹é€Ÿåº¦ãƒ‡ãƒ¼ã‚¿
+       ˆø”F
+            double spdRatioEEEƒZƒbƒg‚·‚é‘¬“xƒf[ƒ^
 
-       æˆ»ã‚Šå€¤ï¼šãªã—
+       –ß‚è’lF‚È‚µ
 
 *************************************************/
 void Craneplus::setCRANESpeeddata(int id, double spdRatio)
@@ -397,12 +437,12 @@ void Craneplus::setCRANESpeeddata(int id, double spdRatio)
 
        void setCRANECartesianLimit(Cartesian CartesianLimit)
 
-       æ¦‚è¦ï¼šCartesianLimitã®å€¤ã‚’CRANECartesianLimitã«æ›¸ãè¾¼ã‚€
+       ŠT—vFCartesianLimit‚Ì’l‚ğCRANECartesianLimit‚É‘‚«‚Ş
 
-       å¼•æ•°ï¼š
-            Cartesian CartesianLimitãƒ»ãƒ»ãƒ»ã‚»ãƒƒãƒˆã™ã‚‹ãƒªãƒŸãƒƒãƒˆãƒ‡ãƒ¼ã‚¿ã®æ§‹é€ ä½“(è©³ã—ãã¯Craneplus.h)
+       ˆø”F
+            Cartesian CartesianLimitEEEƒZƒbƒg‚·‚éƒŠƒ~ƒbƒgƒf[ƒ^‚Ì\‘¢‘Ì(Ú‚µ‚­‚ÍCraneplus.h)
 
-       æˆ»ã‚Šå€¤ï¼šãªã—
+       –ß‚è’lF‚È‚µ
 
 *************************************************/
 void Craneplus::setCRANECartesianLimit(Cartesian CartesianLimit)
@@ -420,12 +460,12 @@ void Craneplus::setCRANECartesianLimit(Cartesian CartesianLimit)
 
        void setCRANEJointLimit(JLimit JointLimit[])
 
-       æ¦‚è¦ï¼šJointLimit[]ã®å€¤ã‚’CRANEJointLimit[]ã«æ›¸ãè¾¼ã‚€
+       ŠT—vFJointLimit[]‚Ì’l‚ğCRANEJointLimit[]‚É‘‚«‚Ş
 
-       å¼•æ•°ï¼š
-            JLimit JointLimit[]ãƒ»ãƒ»ãƒ»ã‚»ãƒƒãƒˆã™ã‚‹ãƒªãƒŸãƒƒãƒˆãƒ‡ãƒ¼ã‚¿ã®æ§‹é€ ä½“(è©³ã—ãã¯Craneplus.h)
+       ˆø”F
+            JLimit JointLimit[]EEEƒZƒbƒg‚·‚éƒŠƒ~ƒbƒgƒf[ƒ^‚Ì\‘¢‘Ì(Ú‚µ‚­‚ÍCraneplus.h)
 
-       æˆ»ã‚Šå€¤ï¼šãªã—
+       –ß‚è’lF‚È‚µ
 
 *************************************************/
 void Craneplus::setCRANEJointLimit(JLimit JointLimit[])
@@ -445,12 +485,12 @@ void Craneplus::setCRANEJointLimit(JLimit JointLimit[])
 
       void getCRANEJointdata(double JointPos[])
 
-      æ¦‚è¦ï¼šã‚¯ãƒ©ã‚¹å†…ã®å¤‰æ•°ã®è§’åº¦ãƒ‡ãƒ¼ã‚¿ã‚’å…¥æ‰‹ã™ã‚‹
+      ŠT—vFƒNƒ‰ƒX“à‚Ì•Ï”‚ÌŠp“xƒf[ƒ^‚ğ“üè‚·‚é
 
-      å¼•æ•°ï¼š
-            double JointPos][]ãƒ»ãƒ»ãƒ»å…¥æ‰‹ã—ãŸè§’åº¦ãƒ‡ãƒ¼ã‚¿ã‚’æ ¼ç´ã™ã‚‹å¤‰æ•°
+      ˆø”F
+            double JointPos][]EEE“üè‚µ‚½Šp“xƒf[ƒ^‚ğŠi”[‚·‚é•Ï”
 
-      æˆ»ã‚Šå€¤ï¼šãªã—
+      –ß‚è’lF‚È‚µ
 
 *************************************************/
 void Craneplus::getCRANEJointdata(double JointPos[])
@@ -458,11 +498,11 @@ void Craneplus::getCRANEJointdata(double JointPos[])
 
   ReadArmAngle(); 
 
-  //ã‚¢ãƒ¼ãƒ ãŒæ¨ªã«å¯ãŸçŠ¶æ…‹ã‹ã‚‰ã®è§’åº¦
+  //ƒA[ƒ€‚ª—§‚Á‚½ó‘Ô‚©‚ç‚ÌŠp“x
   JointPos[0] = -150 + ReadAngle[0];
-  JointPos[1] =  240 - ReadAngle[1];
-  JointPos[2] = -150 + ReadAngle[2];
-  JointPos[3] = -150 + ReadAngle[3];
+  JointPos[1] = -150 + ReadAngle[1];
+  JointPos[2] = 150 - ReadAngle[2];
+  JointPos[3] = 150 - ReadAngle[3];
 }
 
 
@@ -470,12 +510,12 @@ void Craneplus::getCRANEJointdata(double JointPos[])
 
       void getCRANESpeeddata(double spdRatio)
 
-      æ¦‚è¦ï¼šã‚¯ãƒ©ã‚¹å†…ã®å¤‰æ•°ã®é€Ÿåº¦ãƒ‡ãƒ¼ã‚¿ã‚’å…¥æ‰‹ã™ã‚‹
+      ŠT—vFƒNƒ‰ƒX“à‚Ì•Ï”‚Ì‘¬“xƒf[ƒ^‚ğ“üè‚·‚é
 
-      å¼•æ•°ï¼š
-            double spdRatioãƒ»ãƒ»ãƒ»å…¥æ‰‹ã—ãŸè§’åº¦ãƒ‡ãƒ¼ã‚¿ã‚’æ ¼ç´ã™ã‚‹å¤‰æ•°
+      ˆø”F
+            double spdRatioEEE“üè‚µ‚½Šp“xƒf[ƒ^‚ğŠi”[‚·‚é•Ï”
 
-      æˆ»ã‚Šå€¤ï¼šãªã—
+      –ß‚è’lF‚È‚µ
 
 *************************************************/
 void Craneplus::getCRANESpeeddata(double spdRatio)
@@ -488,12 +528,12 @@ void Craneplus::getCRANESpeeddata(double spdRatio)
 
       void getCRANECartesianLimit(Cartesian CartesianLimit)
 
-      æ¦‚è¦ï¼šã‚¯ãƒ©ã‚¹å†…ã®å¤‰æ•°ã®ç¯„å›²ãƒªãƒŸãƒƒãƒˆãƒ‡ãƒ¼ã‚¿ã‚’å…¥æ‰‹ã™ã‚‹
+      ŠT—vFƒNƒ‰ƒX“à‚Ì•Ï”‚Ì”ÍˆÍƒŠƒ~ƒbƒgƒf[ƒ^‚ğ“üè‚·‚é
 
-      å¼•æ•°ï¼š
-            Cartesian CartesianLimitãƒ»ãƒ»ãƒ»å…¥æ‰‹ã—ãŸç¯„å›²ãƒªãƒŸãƒƒãƒˆãƒ‡ãƒ¼ã‚¿ã‚’æ ¼ç´ã™ã‚‹å¤‰æ•°
+      ˆø”F
+            Cartesian CartesianLimitEEE“üè‚µ‚½”ÍˆÍƒŠƒ~ƒbƒgƒf[ƒ^‚ğŠi”[‚·‚é•Ï”
 
-      æˆ»ã‚Šå€¤ï¼šãªã—
+      –ß‚è’lF‚È‚µ
 
 *************************************************/
 void Craneplus::getCRANECartesianLimit(Cartesian CartesianLimit)
@@ -512,12 +552,12 @@ void Craneplus::getCRANECartesianLimit(Cartesian CartesianLimit)
 
       void getCRANECartesianLimit(Cartesian CartesianLimit)
 
-      æ¦‚è¦ï¼šã‚¯ãƒ©ã‚¹å†…ã®å¤‰æ•°ã®ç¯„å›²ãƒªãƒŸãƒƒãƒˆãƒ‡ãƒ¼ã‚¿ã‚’å…¥æ‰‹ã™ã‚‹
+      ŠT—vFƒNƒ‰ƒX“à‚Ì•Ï”‚Ì”ÍˆÍƒŠƒ~ƒbƒgƒf[ƒ^‚ğ“üè‚·‚é
 
-      å¼•æ•°ï¼š
-            Cartesian CartesianLimitãƒ»ãƒ»ãƒ»å…¥æ‰‹ã—ãŸç¯„å›²ãƒªãƒŸãƒƒãƒˆãƒ‡ãƒ¼ã‚¿ã‚’æ ¼ç´ã™ã‚‹å¤‰æ•°
+      ˆø”F
+            Cartesian CartesianLimitEEE“üè‚µ‚½”ÍˆÍƒŠƒ~ƒbƒgƒf[ƒ^‚ğŠi”[‚·‚é•Ï”
 
-      æˆ»ã‚Šå€¤ï¼šãªã—
+      –ß‚è’lF‚È‚µ
 
 *************************************************/
 void Craneplus::getCRANEJointLimit(JLimit JointLimit[])
@@ -537,12 +577,12 @@ void Craneplus::getCRANEJointLimit(JLimit JointLimit[])
 
       void ServoOnOff(int torque)
 
-      æ¦‚è¦ï¼šDynamixelã®Write_Dataã§ã‚µãƒ¼ãƒœãƒ¢ãƒ¼ã‚¿ãƒ¼ã®ãƒˆãƒ«ã‚¯ã®OnOffã‚’ã™ã‚‹
+      ŠT—vFDynamixel‚ÌWrite_Data‚ÅƒT[ƒ{ƒ‚[ƒ^[‚Ìƒgƒ‹ƒN‚ÌOnOff‚ğ‚·‚é
 
-      å¼•æ•°ï¼š
-            int truqueãƒ»ãƒ»ãƒ»ãƒˆãƒ«ã‚¯(1â€¦ON,0â€¦OFF)
+      ˆø”F
+            int truqueEEEƒgƒ‹ƒN(1cON,0cOFF)
 
-      æˆ»ã‚Šå€¤ï¼šãªã—
+      –ß‚è’lF‚È‚µ
 
 *************************************************/
 void Craneplus::ServoOnOff(int torque)
@@ -570,11 +610,11 @@ void Craneplus::ServoOnOff(int torque)
 
       void ArmAction()
 
-      æ¦‚è¦ï¼šDynamixelã®RegWrite-Actionã§Writedata[]ã«æ›¸ãè¾¼ã¾ã‚ŒãŸãƒ‡ãƒ¼ã‚¿ã‚’Dynamixelã«é€ä¿¡ã™ã‚‹
+      ŠT—vFDynamixel‚ÌRegWrite-Action‚ÅWritedata[]‚É‘‚«‚Ü‚ê‚½ƒf[ƒ^‚ğDynamixel‚É‘—M‚·‚é
 
-      å¼•æ•°ï¼šãªã—
+      ˆø”F‚È‚µ
 
-      æˆ»ã‚Šå€¤ï¼šãªã—
+      –ß‚è’lF‚È‚µ
 
 *************************************************/
 void Craneplus::ArmAction()
@@ -592,11 +632,11 @@ void Craneplus::ArmAction()
 
       void CRANEcloseGripper()
 
-      æ¦‚è¦ï¼šCRANEã®ãƒãƒ³ãƒ‰ã‚’é–‰ã˜ã‚‹
+      ŠT—vFCRANE‚Ìƒnƒ“ƒh‚ğ•Â‚¶‚é
 
-      å¼•æ•°ï¼šãªã—
+      ˆø”F‚È‚µ
 
-      æˆ»ã‚Šå€¤ï¼šãªã—
+      –ß‚è’lF‚È‚µ
 
 *************************************************/
 void Craneplus::CRANEcloseGripper()
@@ -612,11 +652,11 @@ void Craneplus::CRANEcloseGripper()
 
       void CRANEopenGripper()
 
-      æ¦‚è¦ï¼šCRANEã®ãƒãƒ³ãƒ‰ã‚’é–‹ã
+      ŠT—vFCRANE‚Ìƒnƒ“ƒh‚ğŠJ‚­
 
-      å¼•æ•°ï¼šãªã—
+      ˆø”F‚È‚µ
 
-      æˆ»ã‚Šå€¤ï¼šãªã—
+      –ß‚è’lF‚È‚µ
 
 *************************************************/
 void Craneplus::CRANEopenGripper()
@@ -632,11 +672,11 @@ void Craneplus::CRANEopenGripper()
 
       void CRANEopenGripper()
 
-      æ¦‚è¦ï¼šCRANEã®ãƒãƒ³ãƒ‰æŒ‡å®šã—ãŸé–‹åº¦ã§ã‚’é–‹ã
+      ŠT—vFCRANE‚Ìƒnƒ“ƒhw’è‚µ‚½ŠJ“x‚Å‚ğŠJ‚­
 
-      å¼•æ•°ï¼šdouble angleRatioãƒ»ãƒ»ãƒ»é–‹åº¦
+      ˆø”Fdouble angleRatioEEEŠJ“x
 
-      æˆ»ã‚Šå€¤ï¼šãªã—
+      –ß‚è’lF‚È‚µ
 
 *************************************************/
 void Craneplus::CRANEmoveGripper(double angleRatio)
@@ -652,14 +692,14 @@ void Craneplus::CRANEmoveGripper(double angleRatio)
 
 	int CartesianLimitJudgement( double x , double y , double z )
 	
-	æ¦‚è¦ï¼šCatesianã‚½ãƒ•ãƒˆãƒªãƒŸãƒƒãƒˆã®åˆ¤å®šã‚’è¡Œã†
+	ŠT—vFCatesianƒ\ƒtƒgƒŠƒ~ƒbƒg‚Ì”»’è‚ğs‚¤
 
-	å¼•æ•°ï¼š
-		double xãƒ»ãƒ»ãƒ»x[mm]
-		double yãƒ»ãƒ»ãƒ»y[mm]
-		double zãƒ»ãƒ»ãƒ»z[mm]
+	ˆø”F
+		double xEEEx[mm]
+		double yEEEy[mm]
+		double zEEEz[mm]
 
-	æˆ»ã‚Šå€¤ï¼šCartesianã‚½ãƒ•ãƒˆãƒªãƒŸãƒƒãƒˆã‚’æº€ãŸã—ã¦ã„ã‚Œã°trueã€ãã†ã§ãªã‘ã‚Œã°false
+	–ß‚è’lFCartesianƒ\ƒtƒgƒŠƒ~ƒbƒg‚ğ–‚½‚µ‚Ä‚¢‚ê‚ÎtrueA‚»‚¤‚Å‚È‚¯‚ê‚Îfalse
 
 *************************************************/
 int Craneplus::CartesianLimitJudgement( double x , double y , double z )
@@ -682,11 +722,11 @@ int Craneplus::CartesianLimitJudgement( double x , double y , double z )
 
 	int JointLimitJudgement()
 	
-	æ¦‚è¦ï¼šJointã‚½ãƒ•ãƒˆãƒªãƒŸãƒƒãƒˆã®åˆ¤å®šã‚’è¡Œã†
+	ŠT—vFJointƒ\ƒtƒgƒŠƒ~ƒbƒg‚Ì”»’è‚ğs‚¤
 
-	å¼•æ•°ï¼šãªã—
+	ˆø”F‚È‚µ
 
-	æˆ»ã‚Šå€¤ï¼šJointã‚½ãƒ•ãƒˆãƒªãƒŸãƒƒãƒˆã‚’æº€ãŸã—ã¦ã„ã‚Œã°trueã€ãã†ã§ãªã‘ã‚Œã°false
+	–ß‚è’lFJointƒ\ƒtƒgƒŠƒ~ƒbƒg‚ğ–‚½‚µ‚Ä‚¢‚ê‚ÎtrueA‚»‚¤‚Å‚È‚¯‚ê‚Îfalse
 
 *************************************************/
 int Craneplus::JointLimitJudgement()
@@ -709,14 +749,14 @@ int Craneplus::JointLimitJudgement()
 
 	int CRANELimitJudgement(double x, double y, double z)
 	
-	æ¦‚è¦ï¼šCRANE+ãƒªãƒŸãƒƒãƒˆã®åˆ¤å®šã‚’è¡Œã†
+	ŠT—vFCRANE+ƒŠƒ~ƒbƒg‚Ì”»’è‚ğs‚¤
 
-	å¼•æ•°ï¼šå…ˆç«¯åº§æ¨™å€¤
-		double xãƒ»ãƒ»ãƒ»x[mm]
-                double yãƒ»ãƒ»ãƒ»y[mm]
-		double zãƒ»ãƒ»ãƒ»z[mm]
+	ˆø”Fæ’[À•W’l
+		double xEEEx[mm]
+                double yEEEy[mm]
+		double zEEEz[mm]
 
-	æˆ»ã‚Šå€¤ï¼šCRANE+ãƒªãƒŸãƒƒãƒˆã‚’æº€ãŸã—ã¦ã„ã‚Œã°trueã€ãã†ã§ãªã‘ã‚Œã°false
+	–ß‚è’lFCRANE+ƒŠƒ~ƒbƒg‚ğ–‚½‚µ‚Ä‚¢‚ê‚ÎtrueA‚»‚¤‚Å‚È‚¯‚ê‚Îfalse
 
 *************************************************/
 int Craneplus::CRANELimitJudgement(double x, double y, double z)
@@ -743,15 +783,15 @@ int Craneplus::CRANELimitJudgement(double x, double y, double z)
 
        kinematics(double x, double y, double z, double JointPos[])
 
-       æ¦‚è¦ï¼šã‚¢ãƒ¼ãƒ ã®é€†é‹å‹•å­¦ã‚’è¨ˆç®—ã™ã‚‹
+       ŠT—vFƒA[ƒ€‚Ì‹t‰^“®Šw‚ğŒvZ‚·‚é
 
-       å¼•æ•°ï¼š
-            double xãƒ»ãƒ»ãƒ»xåº§æ¨™
-            double yãƒ»ãƒ»ãƒ»yåº§æ¨™
-            double zãƒ»ãƒ»ãƒ»zåº§æ¨™     
-            double JointPos[]ãƒ»ãƒ»ãƒ»è¨ˆç®—ã—ãŸè§’åº¦ã‚’æ ¼ç´ã™ã‚‹å¤‰æ•°  
+       ˆø”F
+            double xEEExÀ•W
+            double yEEEyÀ•W
+            double zEEEzÀ•W     
+            double JointPos[]EEEŒvZ‚µ‚½Šp“x‚ğŠi”[‚·‚é•Ï”  
     
-       æˆ»ã‚Šå€¤ï¼šé–¢ç¯€è§’åº¦
+       –ß‚è’lFŠÖßŠp“x
 
 *************************************************/
 void Craneplus::kinematics(double x, double y, double z, double JointPos[])
@@ -771,10 +811,10 @@ void Craneplus::kinematics(double x, double y, double z, double JointPos[])
 	double rad;
 
 
-	deg = M_PI / 180;  //degã‚’radã¸
-	rad = 180 / M_PI;  //radã‚’degã¸
+	deg = M_PI / 180;  //deg‚ğrad‚Ö
+	rad = 180 / M_PI;  //rad‚ğdeg‚Ö
 
-	//åº§æ¨™åŸç‚¹åˆã‚ã›
+	//À•WŒ´“_‡‚í‚¹
 	x = x - 14.5;
 	z = z - 45.4;
 
@@ -796,26 +836,26 @@ void Craneplus::kinematics(double x, double y, double z, double JointPos[])
 
 		if (theta3 > 0)
 		{
-			//printf("theta3ãŒ+ã¯ç¶ºéº—ã˜ã‚ƒãªã„\n");
+			//printf("theta3‚ª+‚ÍãY—í‚¶‚á‚È‚¢\n");
 			theta3 = -theta3;
 		}
 
 
 		if (i > 90)
 		{
-			//printf("ã“ã®ä½ç½®ã«ç§»å‹•ã§ãã¾ã›ã‚“\nquit program\n");
+			//printf("‚±‚ÌˆÊ’u‚ÉˆÚ“®‚Å‚«‚Ü‚¹‚ñ\nquit program\n");
 			//exit();
 		}
 		else if (theta3 != theta3)
 		{
 			//printf("sentan = %f\n", sentan);
-			//printf("ã“ã®ä½ç½®ã«ç§»å‹•ã§ãã¾ã›ã‚“\n");
+			//printf("‚±‚ÌˆÊ’u‚ÉˆÚ“®‚Å‚«‚Ü‚¹‚ñ\n");
 			sentan++;
 		}
 
 		else
 		{
-			//printf("å…ˆç«¯è§’åº¦ã¯%f\n", sentan);
+			//printf("æ’[Šp“x‚Í%f\n", sentan);
 			//printf("x3=%f\n", x3);
 			//printf("y3=%f\n", y3);
 			//printf("angle2=%f\n", angle2);
@@ -825,7 +865,7 @@ void Craneplus::kinematics(double x, double y, double z, double JointPos[])
 
 	if (z >= 0)
 	{
-		//Î¸2ã®è¨ˆç®—
+		//ƒÆ2‚ÌŒvZ
 		double alfa;
 		alfa = atan((-r2*sin(theta3)) / (r1 + r2*cos(theta3)));
 
@@ -833,7 +873,7 @@ void Craneplus::kinematics(double x, double y, double z, double JointPos[])
 
 		if (theta2 < 0)
 		{
-			//printf("theta2ãŒãƒã‚¤ãƒŠã‚¹\n");
+			//printf("theta2‚ªƒ}ƒCƒiƒX\n");
 			theta3 = -theta3;
 			alfa = atan((-r2*sin(theta3)) / (r1 + r2*cos(theta3)));
 			theta2 = acos(sqrt(x3*x3 + y3*y3) / sqrt((r1 + r2*cos(theta3))*(r1 + r2*cos(theta3)) + (r2*sin(theta3))*(r2*sin(theta3)))) + alfa;
@@ -852,7 +892,7 @@ void Craneplus::kinematics(double x, double y, double z, double JointPos[])
 
 	else
 	{
-		//Î¸2ã®è¨ˆç®—
+		//ƒÆ2‚ÌŒvZ
 		double alfa;
 		alfa = atan((-r2*sin(theta3)) / (r1 + r2*cos(theta3)));
 		theta2 = -acos(sqrt(x3*x3 + y3*y3) / sqrt((r1 + r2*cos(theta3))*(r1 + r2*cos(theta3)) + (r2*sin(theta3))*(r2*sin(theta3)))) + alfa;
@@ -862,7 +902,7 @@ void Craneplus::kinematics(double x, double y, double z, double JointPos[])
 
 	theta4 = sentan_rad - theta2 - theta3;
 
-	//ç¬¬ä¸€é–¢ç¯€AX-12Aã®å¯å‹•ç¯„å›²å¤–
+	//‘æˆêŠÖßAX-12A‚Ì‰Â“®”ÍˆÍŠO
 	if ((theta1 > 150*deg && theta1 <= 180*deg) || (theta1 < -150*deg && theta1 >= -180*deg))
 	{
 		theta1 = theta1 - M_PI;
@@ -871,9 +911,10 @@ void Craneplus::kinematics(double x, double y, double z, double JointPos[])
 		theta4 = -theta4;
 	}
 
+	//ƒA[ƒ€‚ª—§‚Á‚½ó‘Ô‚©‚ç‚ÌŠp“x
 	JointPos[0] = theta1*rad;
-	JointPos[1] = theta2*rad;
-	JointPos[2] = theta3*rad;
-	JointPos[3] = theta4*rad;
+	JointPos[1] = 90 - theta2*rad;
+	JointPos[2] = -theta3*rad;
+	JointPos[3] = -theta4*rad;
 
 }

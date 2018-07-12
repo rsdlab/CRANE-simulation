@@ -11,6 +11,7 @@
 
 double HomeMotorPosition[4];
 double spdRatio_Middle;
+
 /*
  * Example implementational code for IDL interface JARA_ARM::ManipulatorCommonInterface_Middle
  */
@@ -31,581 +32,581 @@ JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::~JARA_ARM_ManipulatorCommonI
  */
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::closeGripper()
 {
-  std::cout << "closeGripper" << std::endl;
-  crane.CRANEcloseGripper();
-  std::cout<<"Success"<<std::endl<<std::endl;
-  return RETURN_CODE(JARA_ARM::OK,"„Ç™„Éö„É¨„Éº„Ç∑„Éß„É≥„ÇíÊ≠£Â∏∏„Å´Âèó„Åë‰ªò„Åë");
+	std::cout << "closeGripper" << std::endl;
+	crane.CRANEcloseGripper();
+	std::cout << "Success" << std::endl << std::endl;
+	return RETURN_CODE(JARA_ARM::OK, "ÉIÉyÉåÅ[ÉVÉáÉìÇê≥èÌÇ…éÛÇØïtÇØ");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::getBaseOffset(JARA_ARM::HgMatrix offset)
 {
-  std::cout<<"getBaseOffset"<<std::endl;
-  std::cout<<"ERROR : „Ç≥„Éû„É≥„ÉâÊú™ÂÆüË£Ö"<<std::endl<<std::endl;
-  return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED,"Êú™ÂÆüË£Ö„ÅÆ„Ç≥„Éû„É≥„Éâ");
+	std::cout << "getBaseOffset" << std::endl;
+	std::cout << "ERROR : ÉRÉ}ÉìÉhñ¢é¿ëï" << std::endl << std::endl;
+	return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED, "ñ¢é¿ëïÇÃÉRÉ}ÉìÉh");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::getFeedbackPosCartesian(JARA_ARM::CarPosWithElbow& pos)
 {
-  double x;
-  double y;
-  double z;
-  double Rz;
-  double deg;
-  double rad;
-  double JointPos[ARM_FREEDOM-1];
+	double x;
+	double y;
+	double z;
+	double Rz;
+	double deg;
+	double rad;
+	double JointPos[ARM_FREEDOM - 1];
 
-  deg = M_PI / 180;  //deg„Çírad„Å∏
-  rad = 180/M_PI;    //rad„Çídeg„Å∏	
+	deg = M_PI / 180;  //degÇradÇ÷
+	rad = 180 / M_PI;    //radÇdegÇ÷	
 
-  std::cout << "getFeedbackPosCartesian" << std::endl;
+	std::cout << "getFeedbackPosCartesian" << std::endl;
 
-  //„É¢„Éº„Çø„ÉºÈñ¢ÁØÄÂÄ§„ÅÆË™≠„ÅøËæº„Åø
-  crane.getCRANEJointdata(JointPos);
+	//ÉÇÅ[É^Å[ä÷êﬂílÇÃì«Ç›çûÇ›
+	crane.getCRANEJointdata(JointPos);
 
-  //Èñ¢ÁØÄ„ÅÆÁèæÂú®‰ΩçÁΩÆ„ÅÆË®àÁÆó(È†ÜÈÅãÂãïÂ≠¶)
-  x = cos(JointPos[0]*deg) * (r1*cos(JointPos[1]*deg) +r2*cos((JointPos[1] + JointPos[2])*deg) + r3*cos((JointPos[1] + JointPos[2] + JointPos[3])*deg))+14.5;//[mm]
-  y = sin(JointPos[0]*deg) * (r1*cos(JointPos[1]*deg) +r2*cos((JointPos[1] + JointPos[2])*deg) + r3*cos((JointPos[1] + JointPos[2] + JointPos[3])*deg));//[mm]
-  z =(r1*sin(JointPos[1]*deg) +r2*sin((JointPos[1] + JointPos[2])*deg) + r3*sin((JointPos[1] + JointPos[2] + JointPos[3])*deg))+45.4;//[mm]
-  Rz = (JointPos[1] + JointPos[2] + JointPos[3])*deg;//[rad]
+	//ä÷êﬂÇÃåªç›à íuÇÃåvéZ(èáâ^ìÆäw)
+	x = cos(JointPos[0] * deg) * (r1*cos((90 - JointPos[1])*deg) + r2*cos((90 - JointPos[1] - JointPos[2])*deg) + r3*cos((90 - JointPos[1] - JointPos[2] - JointPos[3])*deg)) + 14.5;//[mm]
+	y = sin(JointPos[0] * deg) * (r1*cos((90 - JointPos[1])*deg) + r2*cos((90 - JointPos[1] - JointPos[2])*deg) + r3*cos((90 - JointPos[1] - JointPos[2] - JointPos[3])*deg));//[mm]
+	z = (r1*sin((90 - JointPos[1])*deg) + r2*sin((90 - JointPos[1] - JointPos[2])*deg) + r3*sin((90 - JointPos[1] - JointPos[2] - JointPos[3])*deg)) + 45.4;//[mm]
+	Rz = (90 - JointPos[1] - JointPos[2] - JointPos[3])*deg;//[rad]
 
 
 
-    
-  pos.carPos[0][0]=cos(Rz);
-  pos.carPos[0][1]=-sin(Rz);
-  pos.carPos[0][2]=0.0;
-  pos.carPos[0][3]=(x);//x[mm]
-  
-  pos.carPos[1][0]=sin(Rz);
-  pos.carPos[1][1]=cos(Rz);
-  pos.carPos[1][2]=0.0;
-  pos.carPos[1][3]=(y);//y[mm]
-  
-  pos.carPos[2][0]=0.0;
-  pos.carPos[2][1]=0.0;
-  pos.carPos[2][2]=1.0;
-  pos.carPos[2][3]=(z);//z[mm]
+	pos.carPos[0][0] = cos(Rz);
+	pos.carPos[0][1] = -sin(Rz);
+	pos.carPos[0][2] = 0.0;
+	pos.carPos[0][3] = (x);//x[mm]
 
-  std::cout<<" x  : "<< pos.carPos[0][3] << "[mm]" <<std::endl;
-  std::cout<<" y  : "<< pos.carPos[1][3] << "[mm]" <<std::endl;
-  std::cout<<" z  : "<< pos.carPos[2][3] << "[mm]" <<std::endl;
-  std::cout<<" Rz : "<< Rz*rad << "[deg]" << std::endl;
+	pos.carPos[1][0] = sin(Rz);
+	pos.carPos[1][1] = cos(Rz);
+	pos.carPos[1][2] = 0.0;
+	pos.carPos[1][3] = (y);//y[mm]
 
-  std::cout<<"Success"<<std::endl<<std::endl;
-  
-  return RETURN_CODE(JARA_ARM::OK,"„Ç™„Éö„É¨„Éº„Ç∑„Éß„É≥„ÇíÊ≠£Â∏∏„Å´Âèó„Åë‰ªò„Åë");
+	pos.carPos[2][0] = 0.0;
+	pos.carPos[2][1] = 0.0;
+	pos.carPos[2][2] = 1.0;
+	pos.carPos[2][3] = (z);//z[mm]
+
+	std::cout << " x  : " << pos.carPos[0][3] << "[mm]" << std::endl;
+	std::cout << " y  : " << pos.carPos[1][3] << "[mm]" << std::endl;
+	std::cout << " z  : " << pos.carPos[2][3] << "[mm]" << std::endl;
+	std::cout << " Rz : " << Rz*rad << "[deg]" << std::endl;
+
+	std::cout << "Success" << std::endl << std::endl;
+
+	return RETURN_CODE(JARA_ARM::OK, "ÉIÉyÉåÅ[ÉVÉáÉìÇê≥èÌÇ…éÛÇØïtÇØ");
 
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::getMaxSpeedCartesian(JARA_ARM::CartesianSpeed& speed)
 {
-  std::cout<<"GetMaxSpeedCartesian"<<std::endl;
-  std::cout<<"ERROR : „Ç≥„Éû„É≥„ÉâÊú™ÂÆüË£Ö"<<std::endl<<std::endl;
-  return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED,"Êú™ÂÆüË£Ö„ÅÆ„Ç≥„Éû„É≥„Éâ");
+	std::cout << "GetMaxSpeedCartesian" << std::endl;
+	std::cout << "ERROR : ÉRÉ}ÉìÉhñ¢é¿ëï" << std::endl << std::endl;
+	return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED, "ñ¢é¿ëïÇÃÉRÉ}ÉìÉh");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::getMaxSpeedJoint(JARA_ARM::DoubleSeq_out speed)
 {
-  speed = new JARA_ARM::DoubleSeq;
-  speed->length(1); 
-  std::cout<<"GetMaxSpeedJoint"<<std::endl;
-  std::cout<<"ERROR : „Ç≥„Éû„É≥„ÉâÊú™ÂÆüË£Ö"<<std::endl<<std::endl;
-  return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED,"Êú™ÂÆüË£Ö„ÅÆ„Ç≥„Éû„É≥„Éâ");
+	speed = new JARA_ARM::DoubleSeq;
+	speed->length(1);
+	std::cout << "GetMaxSpeedJoint" << std::endl;
+	std::cout << "ERROR : ÉRÉ}ÉìÉhñ¢é¿ëï" << std::endl << std::endl;
+	return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED, "ñ¢é¿ëïÇÃÉRÉ}ÉìÉh");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::getMinAccelTimeCartesian(::CORBA::Double& aclTime)
 {
-  std::cout<<"GetMinAccelTimeJoint"<<std::endl;
-  std::cout<<"ERROR : „Ç≥„Éû„É≥„ÉâÊú™ÂÆüË£Ö"<<std::endl<<std::endl;
-  return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED,"Êú™ÂÆüË£Ö„ÅÆ„Ç≥„Éû„É≥„Éâ");
+	std::cout << "GetMinAccelTimeJoint" << std::endl;
+	std::cout << "ERROR : ÉRÉ}ÉìÉhñ¢é¿ëï" << std::endl << std::endl;
+	return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED, "ñ¢é¿ëïÇÃÉRÉ}ÉìÉh");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::getMinAccelTimeJoint(::CORBA::Double& aclTime)
 {
-  std::cout<<"GetMinAccelTimeJoint"<<std::endl;
-  std::cout<<"ERROR : „Ç≥„Éû„É≥„ÉâÊú™ÂÆüË£Ö"<<std::endl<<std::endl;
-  return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED,"Êú™ÂÆüË£Ö„ÅÆ„Ç≥„Éû„É≥„Éâ");
+	std::cout << "GetMinAccelTimeJoint" << std::endl;
+	std::cout << "ERROR : ÉRÉ}ÉìÉhñ¢é¿ëï" << std::endl << std::endl;
+	return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED, "ñ¢é¿ëïÇÃÉRÉ}ÉìÉh");
 }
 
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::getSoftLimitCartesian(JARA_ARM::LimitValue& xLimit, JARA_ARM::LimitValue& yLimit, JARA_ARM::LimitValue& zLimit)
 {
-  std::cout<<"GetSoftLimitCartesian"<<std::endl;
-  Cartesian CartesianLimit;
-  
-  crane.getCRANECartesianLimit(CartesianLimit);
-  xLimit.upper = CartesianLimit.x.Upper;//[mm](„É≠„Éú„ÉÉ„ÉàÂ∫ßÊ®ôÁ≥ª)
-  xLimit.lower = CartesianLimit.x.Lower;
-  yLimit.upper = CartesianLimit.y.Upper;
-  yLimit.lower = CartesianLimit.y.Lower;
-  zLimit.upper = CartesianLimit.z.Upper;
-  zLimit.lower = CartesianLimit.z.Lower;
-  
-  std::cout << "xLimit.upper : " << xLimit.upper << std::endl;
-  std::cout << "xLimit.lower : " << xLimit.lower << std::endl;
-  std::cout << "yLimit.upper : " << yLimit.upper << std::endl;
-  std::cout << "yLimit.lower : " << yLimit.lower << std::endl;
-  std::cout << "zLimit.upper : " << zLimit.upper << std::endl;
-  std::cout << "zLimit.lower : " << zLimit.lower << std::endl;
+	std::cout << "GetSoftLimitCartesian" << std::endl;
+	Cartesian CartesianLimit;
 
-  std::cout<<"Success"<<std::endl<<std::endl;
-  return RETURN_CODE(JARA_ARM::OK,"„Ç™„Éö„É¨„Éº„Ç∑„Éß„É≥„ÇíÊ≠£Â∏∏„Å´Âèó„Åë‰ªò„Åë");  
+	crane.getCRANECartesianLimit(CartesianLimit);
+	xLimit.upper = CartesianLimit.x.Upper;//[mm](ÉçÉ{ÉbÉgç¿ïWån)
+	xLimit.lower = CartesianLimit.x.Lower;
+	yLimit.upper = CartesianLimit.y.Upper;
+	yLimit.lower = CartesianLimit.y.Lower;
+	zLimit.upper = CartesianLimit.z.Upper;
+	zLimit.lower = CartesianLimit.z.Lower;
+
+	std::cout << "xLimit.upper : " << xLimit.upper << std::endl;
+	std::cout << "xLimit.lower : " << xLimit.lower << std::endl;
+	std::cout << "yLimit.upper : " << yLimit.upper << std::endl;
+	std::cout << "yLimit.lower : " << yLimit.lower << std::endl;
+	std::cout << "zLimit.upper : " << zLimit.upper << std::endl;
+	std::cout << "zLimit.lower : " << zLimit.lower << std::endl;
+
+	std::cout << "Success" << std::endl << std::endl;
+	return RETURN_CODE(JARA_ARM::OK, "ÉIÉyÉåÅ[ÉVÉáÉìÇê≥èÌÇ…éÛÇØïtÇØ");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::moveGripper(JARA_ARM::ULONG angleRatio)
 {
-  std::cout << "moveGripper" << std::endl;
-  double move;
+	std::cout << "moveGripper" << std::endl;
+	double move;
 
-  move = (double)angleRatio;
+	move = (double)angleRatio;
 
-  if(angleRatio>0 && angleRatio<=100){
-    crane.CRANEmoveGripper(move);
-  }
-  else{
-    std::cout << "ERROR : angleRatio Wrong Value" << std::endl;
-    return RETURN_CODE(JARA_ARM::VALUE_ERR,"ÂºïÊï∞„Åå‰∏çÊ≠£");
-  }
-  std::cout<<"Success"<<std::endl<<std::endl;
+	if (angleRatio>0 && angleRatio <= 100){
+		crane.CRANEmoveGripper(move);
+	}
+	else{
+		std::cout << "ERROR : angleRatio Wrong Value" << std::endl;
+		return RETURN_CODE(JARA_ARM::VALUE_ERR, "à¯êîÇ™ïsê≥");
+	}
+	std::cout << "Success" << std::endl << std::endl;
 
-  return RETURN_CODE(JARA_ARM::OK,"„Ç™„Éö„É¨„Éº„Ç∑„Éß„É≥„ÇíÊ≠£Â∏∏„Å´Âèó„Åë‰ªò„Åë");
+	return RETURN_CODE(JARA_ARM::OK, "ÉIÉyÉåÅ[ÉVÉáÉìÇê≥èÌÇ…éÛÇØïtÇØ");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::moveLinearCartesianAbs(const JARA_ARM::CarPosWithElbow& carPoint)
 {
-  std::cout<<"moveLinearCartesianAbs"<<std::endl;
-  std::cout<<"ERROR : „Ç≥„Éû„É≥„ÉâÊú™ÂÆüË£Ö"<<std::endl<<std::endl;
-  return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED,"Êú™ÂÆüË£Ö„ÅÆ„Ç≥„Éû„É≥„Éâ");
+	std::cout << "moveLinearCartesianAbs" << std::endl;
+	std::cout << "ERROR : ÉRÉ}ÉìÉhñ¢é¿ëï" << std::endl << std::endl;
+	return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED, "ñ¢é¿ëïÇÃÉRÉ}ÉìÉh");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::moveLinearCartesianRel(const JARA_ARM::CarPosWithElbow& carPoint)
 {
-  std::cout<<"moveLinearCartesianRel"<<std::endl;
-  std::cout<<"ERROR : „Ç≥„Éû„É≥„ÉâÊú™ÂÆüË£Ö"<<std::endl<<std::endl;
-  return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED,"Êú™ÂÆüË£Ö„ÅÆ„Ç≥„Éû„É≥„Éâ");
+	std::cout << "moveLinearCartesianRel" << std::endl;
+	std::cout << "ERROR : ÉRÉ}ÉìÉhñ¢é¿ëï" << std::endl << std::endl;
+	return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED, "ñ¢é¿ëïÇÃÉRÉ}ÉìÉh");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::movePTPCartesianAbs(const JARA_ARM::CarPosWithElbow& carPoint)
 {
-  int i=0,idm=0,ids=0,idt=0,idf=0;
-  double setfabs = 0;
-  int Judge;
-  double CRANEJointPos[ARM_FREEDOM-1];   //Â∑Æ„ÅÆÁµ∂ÂØæÂÄ§
-  double nowJointPos[ARM_FREEDOM-1];     //ÁèæÂú®ÂÄ§
-  double targetJointPos[ARM_FREEDOM-1];  //ÁõÆÊ®ôÂÄ§
-  double difference[ARM_FREEDOM-1];      //ÁèæÂú®ÂÄ§„Å®ÁõÆÊ®ôÂÄ§„ÅÆÂ∑Æ
-  double max = 0;      //Â∑Æ„ÅÆÈ†Ü‰Ωç‰ªò„Åë
-  double second = 0;
-  double third = 0;
-  double fourth = 0;
+	int i = 0, idm = 0, ids = 0, idt = 0, idf = 0;
+	double setfabs = 0;
+	int Judge;
+	double CRANEJointPos[ARM_FREEDOM - 1];   //ç∑ÇÃê‚ëŒíl
+	double nowJointPos[ARM_FREEDOM - 1];     //åªç›íl
+	double targetJointPos[ARM_FREEDOM - 1];  //ñ⁄ïWíl
+	double difference[ARM_FREEDOM - 1];      //åªç›ílÇ∆ñ⁄ïWílÇÃç∑
+	double max = 0;      //ç∑ÇÃèáà ïtÇØ
+	double second = 0;
+	double third = 0;
+	double fourth = 0;
 
-  std::cout << "moveLinearCartesianAbs" << std::endl;
+	std::cout << "moveLinearCartesianAbs" << std::endl;
 
-  //Cartesian„ÇΩ„Éï„Éà„É™„Éü„ÉÉ„ÉàÂà§ÂÆö
-  Judge = crane.CartesianLimitJudgement(carPoint.carPos[0][3],carPoint.carPos[1][3],carPoint.carPos[2][3]);
+	//CartesianÉ\ÉtÉgÉäÉ~ÉbÉgîªíË
+	Judge = crane.CartesianLimitJudgement(carPoint.carPos[0][3], carPoint.carPos[1][3], carPoint.carPos[2][3]);
 
-  if(Judge != true){
-    std::cout<<"ERROR : Cartesian Soft Limit Over"<<std::endl<<std::endl;
-    return RETURN_CODE(JARA_ARM::NG,"„Ç™„Éö„É¨„Éº„Ç∑„Éß„É≥ÊãíÂê¶");
-  }
+	if (Judge != true){
+		std::cout << "ERROR : Cartesian Soft Limit Over" << std::endl << std::endl;
+		return RETURN_CODE(JARA_ARM::NG, "ÉIÉyÉåÅ[ÉVÉáÉìãëî€");
+	}
 
-  //CRANE„ÇΩ„Éï„Éà„É™„Éü„ÉÉ„ÉàÂà§ÂÆö
-  Judge = crane.CRANELimitJudgement(carPoint.carPos[0][3],carPoint.carPos[1][3],carPoint.carPos[2][3]);
-  if(Judge != true){
-    std::cout<<"ERROR : CRANE Limit Over"<<std::endl<<std::endl;
-    return RETURN_CODE(JARA_ARM::NG,"„Ç™„Éö„É¨„Éº„Ç∑„Éß„É≥ÊãíÂê¶");
-  }
+	//CRANEÉ\ÉtÉgÉäÉ~ÉbÉgîªíË
+	Judge = crane.CRANELimitJudgement(carPoint.carPos[0][3], carPoint.carPos[1][3], carPoint.carPos[2][3]);
+	if (Judge != true){
+		std::cout << "ERROR : CRANE Limit Over" << std::endl << std::endl;
+		return RETURN_CODE(JARA_ARM::NG, "ÉIÉyÉåÅ[ÉVÉáÉìãëî€");
+	}
 
-  crane.getCRANEJointdata(nowJointPos);
+	crane.getCRANEJointdata(nowJointPos);
 
-  //ÈÄÜÈÅãÂãïÂ≠¶  JointPos„Å´Ë®àÁÆóËßíÂ∫¶„ÅåÊ†ºÁ¥ç„Åï„Çå„Çã
-  crane.kinematics(carPoint.carPos[0][3],carPoint.carPos[1][3],carPoint.carPos[2][3],targetJointPos);
-  //ÁõÆÊ®ôÂÄ§„Å®ÁèæÂú®Âú∞„ÅÆÂ∑Æ„ÇíÂèñ„Çã
-  for(int h=0;h<ARM_FREEDOM-1;h++){
-    difference[h] = targetJointPos[h] - nowJointPos[h]; 
-    setfabs = difference[h];
-    CRANEJointPos[h] = fabs(setfabs);   //Áµ∂ÂØæÂÄ§
-    //std::cout << "CRANEJointPos[h] = " << CRANEJointPos[h] << std::endl;
-  }
-  
-  
-  //ÁõÆÊ®ôÂÄ§„Å®ÁèæÂú®Âú∞„ÅÆÂ∑Æ„Å´„Çà„Å£„Å¶Èñ¢ÁØÄÈÄüÂ∫¶„ÇíÂ§â„Åà„Çã
-  //‰∏ÄÁï™Â∑Æ„ÅåÂ§ß„Åç„ÅÑServoid„ÇíÊ±Ç„ÇÅ„Çã
-  max = CRANEJointPos[0];
-  i=0;
-  idm=i+1;
-  for(i=1;i<ARM_FREEDOM-1;i++){
-    if(max < CRANEJointPos[i]){
-      fourth = third;
-      third = second;
-      second = max;
-      max = CRANEJointPos[i];
-      idf = idt;      
-      idt = ids;      
-      ids = idm;
-      idm = i+1;//m„Å´id„ÇíÂÖ•„Çå„Çã„Åü„ÇÅi+1
-    }
-    else if(max > CRANEJointPos[i] && second <CRANEJointPos[i])
-      {
-      fourth = third;
-      third = second;
-      second = CRANEJointPos[i];
-      idf = idt;
-      idt = ids;
-      ids = i+1;
-      }
-    else if(max > CRANEJointPos[i] && second > CRANEJointPos[i] && third < CRANEJointPos[i])
-      {
-	fourth = third;
-	third = CRANEJointPos[i];
-	idf = idt;
-	idt = i+1;
-      }
-    else if(max > CRANEJointPos[i] && second > CRANEJointPos[i] && third > CRANEJointPos[i])
-      {
-      fourth = CRANEJointPos[i];
-      idf = i+1;
-    }
-  } 
+	//ãtâ^ìÆäw  JointPosÇ…åvéZäpìxÇ™äiî[Ç≥ÇÍÇÈ
+	crane.kinematics(carPoint.carPos[0][3], carPoint.carPos[1][3], carPoint.carPos[2][3], targetJointPos);
+	//ñ⁄ïWílÇ∆åªç›ínÇÃç∑ÇéÊÇÈ
+	for (int h = 0; h<ARM_FREEDOM - 1; h++){
+		difference[h] = targetJointPos[h] - nowJointPos[h];
+		setfabs = difference[h];
+		CRANEJointPos[h] = fabs(setfabs);   //ê‚ëŒíl
+		//std::cout << "CRANEJointPos[h] = " << CRANEJointPos[h] << std::endl;
+	}
 
-  crane.setCRANESpeeddata(idm,spdRatio_Middle);
-  crane.setCRANESpeeddata(ids,spdRatio_Middle*(second/max));
-  crane.setCRANESpeeddata(idt,spdRatio_Middle*(third/max));
-  crane.setCRANESpeeddata(idf,spdRatio_Middle*(fourth/max));
-  
-  //ËßíÂ∫¶„Éá„Éº„Çø„Çª„ÉÉ„Éà
-  crane.setCRANEJointdata(targetJointPos);
 
-  //Joint„ÇΩ„Éï„Éà„É™„Éü„ÉÉ„ÉàÂà§ÂÆö
-  Judge = crane.JointLimitJudgement();
-  if(Judge != true){
-    std::cout<<"ERROR : Joint Soft Limit Over"<<std::endl<<std::endl;
-    return RETURN_CODE(JARA_ARM::NG,"„Ç™„Éö„É¨„Éº„Ç∑„Éß„É≥ÊãíÂê¶");
-  }
+	//ñ⁄ïWílÇ∆åªç›ínÇÃç∑Ç…ÇÊÇ¡Çƒä÷êﬂë¨ìxÇïœÇ¶ÇÈ
+	//àÍî‘ç∑Ç™ëÂÇ´Ç¢ServoidÇãÅÇﬂÇÈ
+	max = CRANEJointPos[0];
+	i = 0;
+	idm = i + 1;
+	for (i = 1; i<ARM_FREEDOM - 1; i++){
+		if (max < CRANEJointPos[i]){
+			fourth = third;
+			third = second;
+			second = max;
+			max = CRANEJointPos[i];
+			idf = idt;
+			idt = ids;
+			ids = idm;
+			idm = i + 1;//mÇ…idÇì¸ÇÍÇÈÇΩÇﬂi+1
+		}
+		else if (max > CRANEJointPos[i] && second <CRANEJointPos[i])
+		{
+			fourth = third;
+			third = second;
+			second = CRANEJointPos[i];
+			idf = idt;
+			idt = ids;
+			ids = i + 1;
+		}
+		else if (max > CRANEJointPos[i] && second > CRANEJointPos[i] && third < CRANEJointPos[i])
+		{
+			fourth = third;
+			third = CRANEJointPos[i];
+			idf = idt;
+			idt = i + 1;
+		}
+		else if (max > CRANEJointPos[i] && second > CRANEJointPos[i] && third > CRANEJointPos[i])
+		{
+			fourth = CRANEJointPos[i];
+			idf = i + 1;
+		}
+	}
 
-  crane.ArmAction();
-  
-  std::cout<<"Success"<<std::endl<<std::endl;
-  
-  return RETURN_CODE(JARA_ARM::OK,"„Ç™„Éö„É¨„Éº„Ç∑„Éß„É≥„ÇíÊ≠£Â∏∏„Å´Âèó„Åë‰ªò„Åë");
+	crane.setCRANESpeeddata(idm, spdRatio_Middle);
+	crane.setCRANESpeeddata(ids, spdRatio_Middle*(second / max));
+	crane.setCRANESpeeddata(idt, spdRatio_Middle*(third / max));
+	crane.setCRANESpeeddata(idf, spdRatio_Middle*(fourth / max));
+
+	//äpìxÉfÅ[É^ÉZÉbÉg
+	crane.setCRANEJointdata(targetJointPos);
+
+	//JointÉ\ÉtÉgÉäÉ~ÉbÉgîªíË
+	Judge = crane.JointLimitJudgement();
+	if (Judge != true){
+		std::cout << "ERROR : Joint Soft Limit Over" << std::endl << std::endl;
+		return RETURN_CODE(JARA_ARM::NG, "ÉIÉyÉåÅ[ÉVÉáÉìãëî€");
+	}
+
+	crane.ArmAction();
+
+	std::cout << "Success" << std::endl << std::endl;
+
+	return RETURN_CODE(JARA_ARM::OK, "ÉIÉyÉåÅ[ÉVÉáÉìÇê≥èÌÇ…éÛÇØïtÇØ");
 
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::movePTPCartesianRel(const JARA_ARM::CarPosWithElbow& carPoint)
 {
-  std::cout<<"movePTPCartesianRel"<<std::endl;
-  std::cout<<"ERROR : „Ç≥„Éû„É≥„ÉâÊú™ÂÆüË£Ö"<<std::endl<<std::endl;
-  return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED,"Êú™ÂÆüË£Ö„ÅÆ„Ç≥„Éû„É≥„Éâ");
+	std::cout << "movePTPCartesianRel" << std::endl;
+	std::cout << "ERROR : ÉRÉ}ÉìÉhñ¢é¿ëï" << std::endl << std::endl;
+	return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED, "ñ¢é¿ëïÇÃÉRÉ}ÉìÉh");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::movePTPJointAbs(const JARA_ARM::JointPos& jointPoints)
 {
-  std::cout << "movePTPJointAbs" << std::endl;
-  int i=0,idm=0,ids=0,idt=0,idf=0;
-  double setfabs = 0;
-  int Judge;
-  double CRANEJointPos[ARM_FREEDOM-1];   //Â∑Æ„ÅÆÁµ∂ÂØæÂÄ§
-  double nowJointPos[ARM_FREEDOM-1];     //ÁèæÂú®ÂÄ§
-  double targetJointPos[ARM_FREEDOM-1];  //ÁõÆÊ®ôÂÄ§
-  double difference[ARM_FREEDOM-1];      //ÁèæÂú®ÂÄ§„Å®ÁõÆÊ®ôÂÄ§„ÅÆÂ∑Æ
-  double max = 0;      //Â∑Æ„ÅÆÈ†Ü‰Ωç‰ªò„Åë
-  double second = 0;
-  double third = 0;
-  double fourth = 0;
+	std::cout << "movePTPJointAbs" << std::endl;
+	int i = 0, idm = 0, ids = 0, idt = 0, idf = 0;
+	double setfabs = 0;
+	int Judge;
+	double CRANEJointPos[ARM_FREEDOM - 1];   //ç∑ÇÃê‚ëŒíl
+	double nowJointPos[ARM_FREEDOM - 1];     //åªç›íl
+	double targetJointPos[ARM_FREEDOM - 1];  //ñ⁄ïWíl
+	double difference[ARM_FREEDOM - 1];      //åªç›ílÇ∆ñ⁄ïWílÇÃç∑
+	double max = 0;      //ç∑ÇÃèáà ïtÇØ
+	double second = 0;
+	double third = 0;
+	double fourth = 0;
 
 
-  for(int i=0;i<4;i++){
-  std::cout << "JointPoint["<<i<<"] = " << jointPoints[i] <<std::endl; 
-  }
+	for (int i = 0; i<4; i++){
+		std::cout << "JointPoint[" << i << "] = " << jointPoints[i] << std::endl;
+	}
 
-  targetJointPos[0] = jointPoints[0];
-  targetJointPos[1] = 90 + jointPoints[1];
-  targetJointPos[2] = jointPoints[2];
-  targetJointPos[3] = jointPoints[3];
+	targetJointPos[0] = jointPoints[0];
+	targetJointPos[1] = jointPoints[1];
+	targetJointPos[2] = jointPoints[2];
+	targetJointPos[3] = jointPoints[3];
 
-  crane.getCRANEJointdata(nowJointPos);
-  
-  //ÁõÆÊ®ôÂÄ§„Å®ÁèæÂú®Âú∞„ÅÆÂ∑Æ„ÇíÂèñ„Çã
-  for(int h=0;h<ARM_FREEDOM-1;h++){
-    difference[h] = targetJointPos[h] - nowJointPos[h]; 
-    setfabs = difference[h];
-    CRANEJointPos[h] = fabs(setfabs);   //Áµ∂ÂØæÂÄ§
-  }
-  
-  
-  //ÁõÆÊ®ôÂÄ§„Å®ÁèæÂú®Âú∞„ÅÆÂ∑Æ„Å´„Çà„Å£„Å¶Èñ¢ÁØÄÈÄüÂ∫¶„ÇíÂ§â„Åà„Çã
-  //Â∑Æ„ÅåÂ§ß„Åç„ÅÑÈñ¢ÁØÄid„ÇíÊ±Ç„ÇÅ„Çã
-  max = CRANEJointPos[0];
-  i=0;
-  idm=i+1;
-  for(i=1;i<ARM_FREEDOM-1;i++){
-    if(max < CRANEJointPos[i]){
-      fourth = third;
-      third = second;
-      second = max;
-      max = CRANEJointPos[i];
-      idf = idt;      
-      idt = ids;      
-      ids = idm;
-      idm = i+1;//m„Å´id„ÇíÂÖ•„Çå„Çã„Åü„ÇÅi+1
-    }
-    else if(max > CRANEJointPos[i] && second <CRANEJointPos[i])
-      {
-      fourth = third;
-      third = second;
-      second = CRANEJointPos[i];
-      idf = idt;
-      idt = ids;
-      ids = i+1;
-      }
-    else if(max > CRANEJointPos[i] && second > CRANEJointPos[i] && third < CRANEJointPos[i])
-      {
-	fourth = third;
-	third = CRANEJointPos[i];
-	idf = idt;
-	idt = i+1;
-      }
-    else if(max > CRANEJointPos[i] && second > CRANEJointPos[i] && third > CRANEJointPos[i])
-      {
-      fourth = CRANEJointPos[i];
-      idf = i+1;
-    }
-  } 
+	crane.getCRANEJointdata(nowJointPos);
 
-  crane.setCRANESpeeddata(idm,spdRatio_Middle);
-  crane.setCRANESpeeddata(ids,spdRatio_Middle*(second/max));
-  crane.setCRANESpeeddata(idt,spdRatio_Middle*(third/max));
-  crane.setCRANESpeeddata(idf,spdRatio_Middle*(fourth/max));
+	//ñ⁄ïWílÇ∆åªç›ínÇÃç∑ÇéÊÇÈ
+	for (int h = 0; h<ARM_FREEDOM - 1; h++){
+		difference[h] = targetJointPos[h] - nowJointPos[h];
+		setfabs = difference[h];
+		CRANEJointPos[h] = fabs(setfabs);   //ê‚ëŒíl
+	}
 
-  crane.setCRANEJointdata(targetJointPos);
 
-  Judge = crane.JointLimitJudgement();
-  if(Judge != true){
-    std::cout<<"ERROR : Joint Soft Limit Over"<<std::endl<<std::endl;
-    return RETURN_CODE(JARA_ARM::NG,"„Ç™„Éö„É¨„Éº„Ç∑„Éß„É≥ÊãíÂê¶");
-  }
+	//ñ⁄ïWílÇ∆åªç›ínÇÃç∑Ç…ÇÊÇ¡Çƒä÷êﬂë¨ìxÇïœÇ¶ÇÈ
+	//ç∑Ç™ëÂÇ´Ç¢ä÷êﬂidÇãÅÇﬂÇÈ
+	max = CRANEJointPos[0];
+	i = 0;
+	idm = i + 1;
+	for (i = 1; i<ARM_FREEDOM - 1; i++){
+		if (max < CRANEJointPos[i]){
+			fourth = third;
+			third = second;
+			second = max;
+			max = CRANEJointPos[i];
+			idf = idt;
+			idt = ids;
+			ids = idm;
+			idm = i + 1;//mÇ…idÇì¸ÇÍÇÈÇΩÇﬂi+1
+		}
+		else if (max > CRANEJointPos[i] && second <CRANEJointPos[i])
+		{
+			fourth = third;
+			third = second;
+			second = CRANEJointPos[i];
+			idf = idt;
+			idt = ids;
+			ids = i + 1;
+		}
+		else if (max > CRANEJointPos[i] && second > CRANEJointPos[i] && third < CRANEJointPos[i])
+		{
+			fourth = third;
+			third = CRANEJointPos[i];
+			idf = idt;
+			idt = i + 1;
+		}
+		else if (max > CRANEJointPos[i] && second > CRANEJointPos[i] && third > CRANEJointPos[i])
+		{
+			fourth = CRANEJointPos[i];
+			idf = i + 1;
+		}
+	}
 
-  crane.ArmAction();
-  
-  std::cout<<"Success"<<std::endl<<std::endl;
-  
-  return RETURN_CODE(JARA_ARM::OK,"„Ç™„Éö„É¨„Éº„Ç∑„Éß„É≥„ÇíÊ≠£Â∏∏„Å´Âèó„Åë‰ªò„Åë");
+	crane.setCRANESpeeddata(idm, spdRatio_Middle);
+	crane.setCRANESpeeddata(ids, spdRatio_Middle*(second / max));
+	crane.setCRANESpeeddata(idt, spdRatio_Middle*(third / max));
+	crane.setCRANESpeeddata(idf, spdRatio_Middle*(fourth / max));
+
+	crane.setCRANEJointdata(targetJointPos);
+
+	Judge = crane.JointLimitJudgement();
+	if (Judge != true){
+		std::cout << "ERROR : Joint Soft Limit Over" << std::endl << std::endl;
+		return RETURN_CODE(JARA_ARM::NG, "ÉIÉyÉåÅ[ÉVÉáÉìãëî€");
+	}
+
+	crane.ArmAction();
+
+	std::cout << "Success" << std::endl << std::endl;
+
+	return RETURN_CODE(JARA_ARM::OK, "ÉIÉyÉåÅ[ÉVÉáÉìÇê≥èÌÇ…éÛÇØïtÇØ");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::movePTPJointRel(const JARA_ARM::JointPos& jointPoints)
 {
-  std::cout<<"movePTPJointRel"<<std::endl;
-  std::cout<<"ERROR : „Ç≥„Éû„É≥„ÉâÊú™ÂÆüË£Ö"<<std::endl<<std::endl;
-  return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED,"Êú™ÂÆüË£Ö„ÅÆ„Ç≥„Éû„É≥„Éâ");
+	std::cout << "movePTPJointRel" << std::endl;
+	std::cout << "ERROR : ÉRÉ}ÉìÉhñ¢é¿ëï" << std::endl << std::endl;
+	return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED, "ñ¢é¿ëïÇÃÉRÉ}ÉìÉh");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::openGripper()
 {
-  std::cout << "OpenGripper" << std::endl;
-  crane.CRANEopenGripper();
-  std::cout<<"Success"<<std::endl<<std::endl;
-  return RETURN_CODE(JARA_ARM::OK,"„Ç™„Éö„É¨„Éº„Ç∑„Éß„É≥„ÇíÊ≠£Â∏∏„Å´Âèó„Åë‰ªò„Åë");
+	std::cout << "OpenGripper" << std::endl;
+	crane.CRANEopenGripper();
+	std::cout << "Success" << std::endl << std::endl;
+	return RETURN_CODE(JARA_ARM::OK, "ÉIÉyÉåÅ[ÉVÉáÉìÇê≥èÌÇ…éÛÇØïtÇØ");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::pause()
 {
-  std::cout<<"pause"<<std::endl;
-  std::cout<<"ERROR : „Ç≥„Éû„É≥„ÉâÊú™ÂÆüË£Ö"<<std::endl<<std::endl;
-  return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED,"Êú™ÂÆüË£Ö„ÅÆ„Ç≥„Éû„É≥„Éâ");
+	std::cout << "pause" << std::endl;
+	std::cout << "ERROR : ÉRÉ}ÉìÉhñ¢é¿ëï" << std::endl << std::endl;
+	return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED, "ñ¢é¿ëïÇÃÉRÉ}ÉìÉh");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::resume()
 {
-  std::cout<<"resume"<<std::endl;
-  std::cout<<"ERROR : „Ç≥„Éû„É≥„ÉâÊú™ÂÆüË£Ö"<<std::endl<<std::endl;
-  return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED,"Êú™ÂÆüË£Ö„ÅÆ„Ç≥„Éû„É≥„Éâ");
+	std::cout << "resume" << std::endl;
+	std::cout << "ERROR : ÉRÉ}ÉìÉhñ¢é¿ëï" << std::endl << std::endl;
+	return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED, "ñ¢é¿ëïÇÃÉRÉ}ÉìÉh");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::stop()
 {
-  std::cout<<"stop"<<std::endl;
-  std::cout<<"ERROR : „Ç≥„Éû„É≥„ÉâÊú™ÂÆüË£Ö"<<std::endl<<std::endl;
-  return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED,"Êú™ÂÆüË£Ö„ÅÆ„Ç≥„Éû„É≥„Éâ"); 
+	std::cout << "stop" << std::endl;
+	std::cout << "ERROR : ÉRÉ}ÉìÉhñ¢é¿ëï" << std::endl << std::endl;
+	return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED, "ñ¢é¿ëïÇÃÉRÉ}ÉìÉh");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::setAccelTimeCartesian(::CORBA::Double aclTime)
 {
-  std::cout<<"setAccelTimeCartesian"<<std::endl;
-  std::cout<<"ERROR : „Ç≥„Éû„É≥„ÉâÊú™ÂÆüË£Ö"<<std::endl<<std::endl;
-  return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED,"Êú™ÂÆüË£Ö„ÅÆ„Ç≥„Éû„É≥„Éâ");
+	std::cout << "setAccelTimeCartesian" << std::endl;
+	std::cout << "ERROR : ÉRÉ}ÉìÉhñ¢é¿ëï" << std::endl << std::endl;
+	return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED, "ñ¢é¿ëïÇÃÉRÉ}ÉìÉh");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::setAccelTimeJoint(::CORBA::Double aclTime)
 {
-  std::cout<<"setAccelTimeJoint"<<std::endl;
-  std::cout<<"ERROR : „Ç≥„Éû„É≥„ÉâÊú™ÂÆüË£Ö"<<std::endl<<std::endl;
-  return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED,"Êú™ÂÆüË£Ö„ÅÆ„Ç≥„Éû„É≥„Éâ");
+	std::cout << "setAccelTimeJoint" << std::endl;
+	std::cout << "ERROR : ÉRÉ}ÉìÉhñ¢é¿ëï" << std::endl << std::endl;
+	return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED, "ñ¢é¿ëïÇÃÉRÉ}ÉìÉh");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::setBaseOffset(const JARA_ARM::HgMatrix offset)
 {
-  std::cout<<"setBaseOffset"<<std::endl;
-  std::cout<<"ERROR : „Ç≥„Éû„É≥„ÉâÊú™ÂÆüË£Ö"<<std::endl<<std::endl;
-  return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED,"Êú™ÂÆüË£Ö„ÅÆ„Ç≥„Éû„É≥„Éâ");
+	std::cout << "setBaseOffset" << std::endl;
+	std::cout << "ERROR : ÉRÉ}ÉìÉhñ¢é¿ëï" << std::endl << std::endl;
+	return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED, "ñ¢é¿ëïÇÃÉRÉ}ÉìÉh");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::setControlPointOffset(const JARA_ARM::HgMatrix offset)
 {
-  std::cout<<"setControlPointOffset"<<std::endl;
-  std::cout<<"ERROR : „Ç≥„Éû„É≥„ÉâÊú™ÂÆüË£Ö"<<std::endl<<std::endl;
-  return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED,"Êú™ÂÆüË£Ö„ÅÆ„Ç≥„Éû„É≥„Éâ");
+	std::cout << "setControlPointOffset" << std::endl;
+	std::cout << "ERROR : ÉRÉ}ÉìÉhñ¢é¿ëï" << std::endl << std::endl;
+	return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED, "ñ¢é¿ëïÇÃÉRÉ}ÉìÉh");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::setMaxSpeedCartesian(const JARA_ARM::CartesianSpeed& speed)
 {
-  std::cout<<"setMaxSpeedCartesian"<<std::endl;
-  std::cout<<"ERROR : „Ç≥„Éû„É≥„ÉâÊú™ÂÆüË£Ö"<<std::endl<<std::endl;
-  return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED,"Êú™ÂÆüË£Ö„ÅÆ„Ç≥„Éû„É≥„Éâ");
+	std::cout << "setMaxSpeedCartesian" << std::endl;
+	std::cout << "ERROR : ÉRÉ}ÉìÉhñ¢é¿ëï" << std::endl << std::endl;
+	return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED, "ñ¢é¿ëïÇÃÉRÉ}ÉìÉh");
+
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::setMaxSpeedJoint(const JARA_ARM::DoubleSeq& speed)
 {
-  std::cout<<"setMaxSpeedJoint"<<std::endl;
-  std::cout<<"ERROR : „Ç≥„Éû„É≥„ÉâÊú™ÂÆüË£Ö"<<std::endl<<std::endl;
-  return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED,"Êú™ÂÆüË£Ö„ÅÆ„Ç≥„Éû„É≥„Éâ");
+	std::cout << "setMaxSpeedJoint" << std::endl;
+	std::cout << "ERROR : ÉRÉ}ÉìÉhñ¢é¿ëï" << std::endl << std::endl;
+	return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED, "ñ¢é¿ëïÇÃÉRÉ}ÉìÉh");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::setMinAccelTimeCartesian(::CORBA::Double aclTime)
 {
-  std::cout<<"setMinAccelTimeCartesian"<<std::endl;
-  std::cout<<"ERROR : „Ç≥„Éû„É≥„ÉâÊú™ÂÆüË£Ö"<<std::endl<<std::endl;
-  return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED,"Êú™ÂÆüË£Ö„ÅÆ„Ç≥„Éû„É≥„Éâ");
+	std::cout << "setMinAccelTimeCartesian" << std::endl;
+	std::cout << "ERROR : ÉRÉ}ÉìÉhñ¢é¿ëï" << std::endl << std::endl;
+	return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED, "ñ¢é¿ëïÇÃÉRÉ}ÉìÉh");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::setMinAccelTimeJoint(::CORBA::Double aclTime)
 {
-  std::cout<<"setMinAccelTimeJoint"<<std::endl;
-  std::cout<<"ERROR : „Ç≥„Éû„É≥„ÉâÊú™ÂÆüË£Ö"<<std::endl<<std::endl;
-  return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED,"Êú™ÂÆüË£Ö„ÅÆ„Ç≥„Éû„É≥„Éâ");
+	std::cout << "setMinAccelTimeJoint" << std::endl;
+	std::cout << "ERROR : ÉRÉ}ÉìÉhñ¢é¿ëï" << std::endl << std::endl;
+	return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED, "ñ¢é¿ëïÇÃÉRÉ}ÉìÉh");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::setSoftLimitCartesian(const JARA_ARM::LimitValue& xLimit, const JARA_ARM::LimitValue& yLimit, const JARA_ARM::LimitValue& zLimit)
 {
-  std::cout<<"SetSoftLimitCartesian"<<std::endl;
-  Cartesian CartesianLimit;
-  
-  if((xLimit.upper <= X_LimitMax) && 
-     (xLimit.lower >= X_LimitMin) &&
-     (yLimit.upper <= Y_LimitMax) && 
-     (yLimit.lower >= Y_LimitMin) &&
-     (zLimit.upper <= Z_LimitMax) && 
-     (zLimit.lower >= Z_LimitMin) 
-     ){
-    CartesianLimit.x.Upper = xLimit.upper;
-    CartesianLimit.x.Lower = xLimit.lower;
-    CartesianLimit.y.Upper = yLimit.upper;
-    CartesianLimit.y.Lower = yLimit.lower;
-    CartesianLimit.z.Upper = zLimit.upper;
-    CartesianLimit.z.Lower = zLimit.lower;
-    crane.setCRANECartesianLimit(CartesianLimit);
-    }
-  else{
-    std::cout<<"ERROR : Wrong Value"<<std::endl<<std::endl;
-    return RETURN_CODE(JARA_ARM::VALUE_ERR,"ÂºïÊï∞„Åå‰∏çÊ≠£");
-  }
-  
-  std::cout<<"Success"<<std::endl<<std::endl;
-  
-  return RETURN_CODE(JARA_ARM::OK,"„Ç™„Éö„É¨„Éº„Ç∑„Éß„É≥„ÇíÊ≠£Â∏∏„Å´Âèó„Åë‰ªò„Åë");
+	std::cout << "SetSoftLimitCartesian" << std::endl;
+	Cartesian CartesianLimit;
+
+	if ((xLimit.upper <= X_LimitMax) &&
+		(xLimit.lower >= X_LimitMin) &&
+		(yLimit.upper <= Y_LimitMax) &&
+		(yLimit.lower >= Y_LimitMin) &&
+		(zLimit.upper <= Z_LimitMax) &&
+		(zLimit.lower >= Z_LimitMin)
+		){
+		CartesianLimit.x.Upper = xLimit.upper;
+		CartesianLimit.x.Lower = xLimit.lower;
+		CartesianLimit.y.Upper = yLimit.upper;
+		CartesianLimit.y.Lower = yLimit.lower;
+		CartesianLimit.z.Upper = zLimit.upper;
+		CartesianLimit.z.Lower = zLimit.lower;
+		crane.setCRANECartesianLimit(CartesianLimit);
+	}
+	else{
+		std::cout << "ERROR : Wrong Value" << std::endl << std::endl;
+		return RETURN_CODE(JARA_ARM::VALUE_ERR, "à¯êîÇ™ïsê≥");
+	}
+
+	std::cout << "Success" << std::endl << std::endl;
+
+	return RETURN_CODE(JARA_ARM::OK, "ÉIÉyÉåÅ[ÉVÉáÉìÇê≥èÌÇ…éÛÇØïtÇØ");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::setSpeedCartesian(JARA_ARM::ULONG spdRatio)
 {
-  std::cout<<"setSpeedCartesian"<<std::endl;
-  std::cout<<"ERROR : „Ç≥„Éû„É≥„ÉâÊú™ÂÆüË£Ö"<<std::endl<<std::endl;
-  return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED,"Êú™ÂÆüË£Ö„ÅÆ„Ç≥„Éû„É≥„Éâ");
+	std::cout << "setSpeedCartesian" << std::endl;
+	std::cout << "ERROR : ÉRÉ}ÉìÉhñ¢é¿ëï" << std::endl << std::endl;
+	return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED, "ñ¢é¿ëïÇÃÉRÉ}ÉìÉh");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::setSpeedJoint(JARA_ARM::ULONG spdRatio)
 {
-  std::cout << "SetSpeedJoint" << std::endl;
-  std::cout << "setSpeed = " << spdRatio << "%" << std::endl;
-  spdRatio_Middle = (double)spdRatio; 
-  
-  if (spdRatio >= 1 && spdRatio <= 100){
-    for(int i=0;i<ARM_FREEDOM;i++){
-      crane.setCRANESpeeddata(i,spdRatio_Middle);
-    }
-  }
-  else{
-    std::cout << "ERROR : Wrong Value" << std::endl << std::endl;
-    return RETURN_CODE(JARA_ARM::VALUE_ERR,"ÂºïÊï∞„Åå‰∏çÊ≠£");   
-  }
-  
-  std::cout << "Success" << std::endl << std::endl;
-  
-  return RETURN_CODE(JARA_ARM::OK,"„Ç™„Éö„É¨„Éº„Ç∑„Éß„É≥„ÇíÊ≠£Â∏∏„Å´Âèó„Åë‰ªò„Åë");
+	std::cout << "SetSpeedJoint" << std::endl;
+	std::cout << "setSpeed = " << spdRatio << "%" << std::endl;
+	spdRatio_Middle = (double)spdRatio;
+
+	if (spdRatio >= 1 && spdRatio <= 100){
+		for (int i = 0; i<ARM_FREEDOM; i++){
+			crane.setCRANESpeeddata(i, spdRatio_Middle);
+		}
+	}
+	else{
+		std::cout << "ERROR : Wrong Value" << std::endl << std::endl;
+		return RETURN_CODE(JARA_ARM::VALUE_ERR, "à¯êîÇ™ïsê≥");
+	}
+
+	std::cout << "Success" << std::endl << std::endl;
+
+	return RETURN_CODE(JARA_ARM::OK, "ÉIÉyÉåÅ[ÉVÉáÉìÇê≥èÌÇ…éÛÇØïtÇØ");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::moveCircularCartesianAbs(const JARA_ARM::CarPosWithElbow& carPointR, const JARA_ARM::CarPosWithElbow& carPointT)
 {
-  std::cout<<"moveCircularCartesianAbs"<<std::endl;
-  std::cout<<"ERROR : „Ç≥„Éû„É≥„ÉâÊú™ÂÆüË£Ö"<<std::endl<<std::endl;
-  return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED,"Êú™ÂÆüË£Ö„ÅÆ„Ç≥„Éû„É≥„Éâ");
+	std::cout << "moveCircularCartesianAbs" << std::endl;
+	std::cout << "ERROR : ÉRÉ}ÉìÉhñ¢é¿ëï" << std::endl << std::endl;
+	return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED, "ñ¢é¿ëïÇÃÉRÉ}ÉìÉh");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::moveCircularCartesianRel(const JARA_ARM::CarPosWithElbow& carPointR, const JARA_ARM::CarPosWithElbow& carPointT)
 {
-  std::cout<<"moveCircularCartesianRel"<<std::endl;
-  std::cout<<"ERROR : „Ç≥„Éû„É≥„ÉâÊú™ÂÆüË£Ö"<<std::endl<<std::endl;
-  return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED,"Êú™ÂÆüË£Ö„ÅÆ„Ç≥„Éû„É≥„Éâ");
+	std::cout << "moveCircularCartesianRel" << std::endl;
+	std::cout << "ERROR : ÉRÉ}ÉìÉhñ¢é¿ëï" << std::endl << std::endl;
+	return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED, "ñ¢é¿ëïÇÃÉRÉ}ÉìÉh");
 }
 
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::setHome(const JARA_ARM::JointPos& jointPoint)
 {
-  
-  std::cout<<"SetHome"<<std::endl;
-  
-  HomeMotorPosition[0] = (short)(jointPoint[0]);
-  HomeMotorPosition[1] = 90 + (short)(jointPoint[1]);
-  HomeMotorPosition[2] = (short)(jointPoint[2]);
-  HomeMotorPosition[3] = (short)(jointPoint[3]);
-  
-  std::cout<<"Success"<<std::endl<<std::endl;
-  
-  return RETURN_CODE(JARA_ARM::OK,"„Ç™„Éö„É¨„Éº„Ç∑„Éß„É≥„ÇíÊ≠£Â∏∏„Å´Âèó„Åë‰ªò„Åë");
+
+	std::cout << "SetHome" << std::endl;
+
+	HomeMotorPosition[0] = (short)(jointPoint[0]);
+	HomeMotorPosition[1] = (short)(jointPoint[1]);
+	HomeMotorPosition[2] = (short)(jointPoint[2]);
+	HomeMotorPosition[3] = (short)(jointPoint[3]);
+
+	std::cout << "Success" << std::endl << std::endl;
+
+	return RETURN_CODE(JARA_ARM::OK, "ÉIÉyÉåÅ[ÉVÉáÉìÇê≥èÌÇ…éÛÇØïtÇØ");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::getHome(JARA_ARM::JointPos_out jointPoint)
 {
-  std::cout<<"GetHome"<<std::endl;
-  
-  jointPoint=new JARA_ARM::JointPos;
-  jointPoint->length(ARM_FREEDOM);
-  
-  (*jointPoint)[0]=HomeMotorPosition[0];
-  (*jointPoint)[1]=HomeMotorPosition[1];
-  (*jointPoint)[2]=HomeMotorPosition[2];
-  (*jointPoint)[3]=HomeMotorPosition[3];
-  
-  std::cout<<"Success"<<std::endl<<std::endl;
-  
-  return RETURN_CODE(JARA_ARM::OK,"„Ç™„Éö„É¨„Éº„Ç∑„Éß„É≥„ÇíÊ≠£Â∏∏„Å´Âèó„Åë‰ªò„Åë");
+	std::cout << "GetHome" << std::endl;
+
+	jointPoint = new JARA_ARM::JointPos;
+	jointPoint->length(ARM_FREEDOM);
+
+	(*jointPoint)[0] = HomeMotorPosition[0];
+	(*jointPoint)[1] = HomeMotorPosition[1];
+	(*jointPoint)[2] = HomeMotorPosition[2];
+	(*jointPoint)[3] = HomeMotorPosition[3];
+
+	std::cout << "Success" << std::endl << std::endl;
+
+	return RETURN_CODE(JARA_ARM::OK, "ÉIÉyÉåÅ[ÉVÉáÉìÇê≥èÌÇ…éÛÇØïtÇØ");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_MiddleSVC_impl::goHome()
 {
-  int Judge;
-  std::cout<<"GoHome"<<std::endl;
-  crane.setCRANEJointdata(HomeMotorPosition);
+	int Judge;
+	std::cout << "GoHome" << std::endl;
+	crane.setCRANEJointdata(HomeMotorPosition);
 
-  Judge = crane.JointLimitJudgement();
-  if(Judge != true){
-    std::cout<<"ERROR : Joint Soft Limit Over"<<std::endl<<std::endl;
-    return RETURN_CODE(JARA_ARM::NG,"„Ç™„Éö„É¨„Éº„Ç∑„Éß„É≥ÊãíÂê¶");
-  }
+	Judge = crane.JointLimitJudgement();
+	if (Judge != true){
+		std::cout << "ERROR : Joint Soft Limit Over" << std::endl << std::endl;
+		return RETURN_CODE(JARA_ARM::NG, "ÉIÉyÉåÅ[ÉVÉáÉìãëî€");
+	}
 
-  crane.ArmAction();
+	crane.ArmAction();
 
-  std::cout<<"Success"<<std::endl<<std::endl;
-  
-  return RETURN_CODE(JARA_ARM::OK,"„Ç™„Éö„É¨„Éº„Ç∑„Éß„É≥„ÇíÊ≠£Â∏∏„Å´Âèó„Åë‰ªò„Åë");
+	std::cout << "Success" << std::endl << std::endl;
+
+	return RETURN_CODE(JARA_ARM::OK, "ÉIÉyÉåÅ[ÉVÉáÉìÇê≥èÌÇ…éÛÇØïtÇØ");
 }
 
 

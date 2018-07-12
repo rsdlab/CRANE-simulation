@@ -1,12 +1,23 @@
-//Crane.h
-#ifndef __CRANE_H__
-#define __CRANE_H__
+//Craneplus.h
+#ifndef __Craneplus_H__
+#define __Craneplus_H__
 
-//æ•°å­¦å®šæ•°ã®ä½¿ç”¨
+//”Šw’è”‚Ìg—p
 #define _USE_MATH_DEFINES
 
-/********* includeãƒ•ã‚¡ã‚¤ãƒ« *********/
+/********* includeƒtƒ@ƒCƒ‹ *********/
 #include <cmath>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <math.h>
+#include <iostream>
+
+#ifdef _WIN32
+#include "SerialCommunication.h"
+
+#else
+//linux******************
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/ioctl.h>
@@ -14,52 +25,51 @@
 #include <fcntl.h>
 #include <termios.h>
 #include <unistd.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <math.h>
-#include <iostream>
+//*******************
 
-/********* è¨˜å·å®šæ•° *********/
+#endif
 
-// ã‚¢ãƒ¼ãƒ è‡ªç”±åº¦ (CRANE+ has 5 freedom)
+
+/********* ‹L†’è” *********/
+
+// ƒA[ƒ€©—R“x (CRANE+ has 5 freedom)
 #define ARM_FREEDOM	5
 
-// ã‚¢ãƒ¼ãƒ ã®ãƒªãƒ³ã‚¯ã®é•·ã•
+// ƒA[ƒ€‚ÌƒŠƒ“ƒN‚Ì’·‚³
 #define r1      83
 #define r2      93.5
 #define r3      138
 
-//ç¬¬1è»¸ãƒ¢ãƒ¼ã‚¿ã®å¯å‹•ç¯„å›²
+//‘æ1²ƒ‚[ƒ^‚Ì‰Â“®”ÍˆÍ
 #define	Angle1_LimitMax	300
 #define	Angle1_LimitMin	0
-//ç¬¬2è»¸ãƒ¢ãƒ¼ã‚¿ã®å¯å‹•ç¯„å›²
+//‘æ2²ƒ‚[ƒ^‚Ì‰Â“®”ÍˆÍ
 #define	Angle2_LimitMax	300
 #define	Angle2_LimitMin 0
-//ç¬¬3è»¸ãƒ¢ãƒ¼ã‚¿ã®å¯å‹•ç¯„å›²
+//‘æ3²ƒ‚[ƒ^‚Ì‰Â“®”ÍˆÍ
 #define	Angle3_LimitMax	300
 #define	Angle3_LimitMin	0
-//ç¬¬4è»¸ãƒ¢ãƒ¼ã‚¿ã®å¯å‹•ç¯„å›²
+//‘æ4²ƒ‚[ƒ^‚Ì‰Â“®”ÍˆÍ
 #define	Angle4_LimitMax	300
 #define	Angle4_LimitMin	0
-//ç¬¬5è»¸ãƒ¢ãƒ¼ã‚¿ã®å¯å‹•ç¯„å›²
+//‘æ5²ƒ‚[ƒ^‚Ì‰Â“®”ÍˆÍ
 
-//Xè»¸å¯å‹•ç¯„å›²[mm]
+//X²‰Â“®”ÍˆÍ[mm]
 #define X_LimitMax   329
 #define X_LimitMin   -300
-//Yè»¸å¯å‹•ç¯„å›²[mm]
+//Y²‰Â“®”ÍˆÍ[mm]
 #define Y_LimitMax   314.5
 #define Y_LimitMin   -314.5
-//Zè»¸å¯å‹•ç¯„å›²[mm]
+//Z²‰Â“®”ÍˆÍ[mm]
 #define Z_LimitMax   359.9
 #define Z_LimitMin   0
 
-//ãƒãƒ³ãƒ‰ã®å¯å‹•ç¯„å›²
+//ƒnƒ“ƒh‚Ì‰Â“®”ÍˆÍ
 #define Hand_LimitMax	   130
 #define Hand_LimitMin	   185
 
 
-/********* è¨˜å·å®šæ•°ã®çµ‚äº† *********/
+/********* ‹L†’è”‚ÌI—¹ *********/
 
 
 
@@ -67,7 +77,7 @@
 
 typedef unsigned char uchar;
 
-//ã‚µãƒ¼ãƒœã«æ›¸ãè¾¼ã‚€ãƒ‡ãƒ¼ã‚¿
+//ƒT[ƒ{‚É‘‚«‚Şƒf[ƒ^
 typedef struct
 {
   int CW_ComplianceMargin;
@@ -81,14 +91,14 @@ typedef struct
   double Torque;//%
 }ServoWrite;
 
-//CRANEã®ã‚¸ãƒ§ã‚¤ãƒ³ãƒˆãƒªãƒŸãƒƒãƒˆã®æ§‹é€ ä½“
+//CRANE‚ÌƒWƒ‡ƒCƒ“ƒgƒŠƒ~ƒbƒg‚Ì\‘¢‘Ì
 typedef struct
 {
   short Upper;
   short Lower;
 }JLimit;
 
-//CRANEã®å¯å‹•ç¯„å›²ãƒªãƒŸãƒƒãƒˆã®æ§‹é€ ä½“
+//CRANE‚Ì‰Â“®”ÍˆÍƒŠƒ~ƒbƒg‚Ì\‘¢‘Ì
 typedef struct
 {
   short Upper;
@@ -106,126 +116,132 @@ typedef struct
 
 
 
-/******************ã‚¯ãƒ©ã‚¹å®šç¾©*********************/ 
+/******************ƒNƒ‰ƒX’è‹`*********************/ 
 class Craneplus{
  private:
 
-  //privateå¤‰æ•°ã®å®£è¨€
+  //private•Ï”‚ÌéŒ¾
   char *dev;
-  int fd;
-  ServoWrite Writedata[ARM_FREEDOM]; //Writedata[0]ã¯ã‚µãƒ¼ãƒœID1ã®ãƒ‡ãƒ¼ã‚¿
+  ServoWrite Writedata[ARM_FREEDOM]; //Writedata[0]‚ÍƒT[ƒ{ID1‚Ìƒf[ƒ^
   double ReadAngle[ARM_FREEDOM];
   Cartesian CRANECartesianLimit;
   JLimit CRANEJointLimit[5];
+#ifdef WIN32
+  SerialCommunication sc;
+#else
+  int fd;
   struct termios newtio;
+#endif
+  //privateŠÖ”‚Ì’è‹`
+  //ƒVƒŠƒAƒ‹’ÊMŠÖ”
 
-  //privateé–¢æ•°ã®å®šç¾©
-  //ã‚·ãƒªã‚¢ãƒ«é€šä¿¡é–¢æ•°
-
-  //ã‚·ãƒªã‚¢ãƒ«é€šä¿¡ã§ãƒ‡ãƒ¼ã‚¿ã‚’é€ä¿¡ã™ã‚‹
+  //ƒVƒŠƒAƒ‹’ÊM‚Åƒf[ƒ^‚ğ‘—M‚·‚é
   void serialWrite(uchar *buf, int length);
 
-  //ã‚·ãƒªã‚¢ãƒ«é€šä¿¡ç”¨ã®ãƒã‚§ãƒƒã‚¯ã‚µãƒ ã‚’è¨ˆç®—ã™ã‚‹
-  uchar calcCheckSum(uchar *buf, int Datasize)
-;
-  //ã‚·ãƒªã‚¢ãƒ«é€šä¿¡ã§ãã¦ã„ã‚‹ã‹ç¢ºèªã™ã‚‹
+  //ƒVƒŠƒAƒ‹’ÊM‚Åƒf[ƒ^‚ğóM‚·‚é
+  void serialRead(uchar *buf, int length);
+
+  //ƒVƒŠƒAƒ‹’ÊM—p‚Ìƒ`ƒFƒbƒNƒTƒ€‚ğŒvZ‚·‚é
+  uchar calcCheckSum(uchar *buf, int Datasize);
+
+  //ƒVƒŠƒAƒ‹’ÊM‚Å‚«‚Ä‚¢‚é‚©Šm”F‚·‚é
   void checkserial();
 
-  //Dynamixelã®RegWriteã§ãƒ‡ãƒ¼ã‚¿ã‚’é€ä¿¡ã™ã‚‹
+  //Dynamixel‚ÌRegWrite‚Åƒf[ƒ^‚ğ‘—M‚·‚é
   void RegWrite(int id, ServoWrite data[]);
 
-  //Dynamixelã®Actionã§ãƒ‡ãƒ¼ã‚¿ã‚’é€ä¿¡ã™ã‚‹
+  //Dynamixel‚ÌAction‚Åƒf[ƒ^‚ğ‘—M‚·‚é
   void Action(void);
 
-  //ã‚µãƒ¼ãƒœã®Angleå€¤ã‚’å—ã‘å–ã‚‹
+  //ƒT[ƒ{‚ÌAngle’l‚ğó‚¯æ‚é
   void ReadServoAngle(int id, double ReadAngle[]);
 
-  //ã‚¢ãƒ¼ãƒ ã®å„é–¢ç¯€ã®Angleå€¤ã‚’å—ã‘å–ã‚‹
+  //ƒA[ƒ€‚ÌŠeŠÖß‚ÌAngle’l‚ğó‚¯æ‚é
   void ReadArmAngle();
 public:
 
-  //ã‚³ãƒ³ã‚¹ãƒˆãƒ©ã‚¯ã‚¿
+  //ƒRƒ“ƒXƒgƒ‰ƒNƒ^
   Craneplus();
 
-  //ã‚·ãƒªã‚¢ãƒ«é€šä¿¡é–¢æ•°
-  //ã‚·ãƒªã‚¢ãƒ«é€šä¿¡ã‚’é–‹å§‹ã™ã‚‹
+  //ƒVƒŠƒAƒ‹’ÊMŠÖ”
+  //ƒVƒŠƒAƒ‹’ÊM‚ğŠJn‚·‚é
   int OpenCOMDevice(const char *SERIAL_PORT);
 
-  //ã‚·ãƒªã‚¢ãƒ«é€šä¿¡ã‚’çµ‚äº†ã™ã‚‹
+  //ƒVƒŠƒAƒ‹’ÊM‚ğI—¹‚·‚é
   void CloseCOMDevice();
   
 
-  // åˆæœŸåŒ–é–¢æ•°
-  //ã‚µãƒ¼ãƒœãƒ¢ãƒ¼ã‚¿ãƒ¼ã«é€ã‚‹ãƒ‡ãƒ¼ã‚¿ã®å¤‰æ•°ã‚’åˆæœŸåŒ–ã™ã‚‹é–¢æ•°
+  // ‰Šú‰»ŠÖ”
+  //ƒT[ƒ{ƒ‚[ƒ^[‚É‘—‚éƒf[ƒ^‚Ì•Ï”‚ğ‰Šú‰»‚·‚éŠÖ”
 
   void initServo(int id, ServoWrite data[]);
-  //ã™ã¹ã¦ã®ã‚µãƒ¼ãƒœãƒ¢ãƒ¼ã‚¿ãƒ¼ã«é€ã‚‹ãƒ‡ãƒ¼ã‚¿ã®å¤‰æ•°ã‚’åˆæœŸåŒ–ã™ã‚‹é–¢æ•°
+  //‚·‚×‚Ä‚ÌƒT[ƒ{ƒ‚[ƒ^[‚É‘—‚éƒf[ƒ^‚Ì•Ï”‚ğ‰Šú‰»‚·‚éŠÖ”
 
   void initArm();
 
-  //privateå¤‰æ•°ã‚»ãƒƒãƒˆé–¢æ•°
-  //JointPos[]ã®å€¤ã‚’Writedata[].Angleã«æ›¸ãè¾¼ã‚€
+  //private•Ï”ƒZƒbƒgŠÖ”
+  //JointPos[]‚Ì’l‚ğWritedata[].Angle‚É‘‚«‚Ş
   void setCRANEJointdata(double JointPos[]);
 
-  //spdRatioã®å€¤ã‚’Writedata[].Speedã«æ›¸ãè¾¼ã‚€
+  //spdRatio‚Ì’l‚ğWritedata[].Speed‚É‘‚«‚Ş
   void setCRANESpeeddata(int id, double spdRatio);
 
-  //CartesianLimitã®å€¤ã‚’CRANECartesianLimitã«æ›¸ãè¾¼ã‚€
+  //CartesianLimit‚Ì’l‚ğCRANECartesianLimit‚É‘‚«‚Ş
   void setCRANECartesianLimit(Cartesian CartesianLimit);
 
-  //JointLimit[]ã®å€¤ã‚’CRANEJointLimit[]ã«æ›¸ãè¾¼ã‚€
+  //JointLimit[]‚Ì’l‚ğCRANEJointLimit[]‚É‘‚«‚Ş
   void setCRANEJointLimit(JLimit JointLimit[]);
 
 
-  //privateå¤‰æ•°ã‚²ãƒƒãƒˆé–¢æ•°
-  //ã‚¯ãƒ©ã‚¹å†…ã®å¤‰æ•°ã®è§’åº¦ãƒ‡ãƒ¼ã‚¿ã‚’å…¥æ‰‹ã™ã‚‹
+  //private•Ï”ƒQƒbƒgŠÖ”
+  //ƒNƒ‰ƒX“à‚Ì•Ï”‚ÌŠp“xƒf[ƒ^‚ğ“üè‚·‚é
   void getCRANEJointdata(double JointPos[]);
 
-  //ã‚¯ãƒ©ã‚¹å†…ã®å¤‰æ•°ã®é€Ÿåº¦ãƒ‡ãƒ¼ã‚¿ã‚’å…¥æ‰‹ã™ã‚‹
+  //ƒNƒ‰ƒX“à‚Ì•Ï”‚Ì‘¬“xƒf[ƒ^‚ğ“üè‚·‚é
   void getCRANESpeeddata(double spdRatio);
 
-  //ã‚¯ãƒ©ã‚¹å†…ã®å¤‰æ•°ã®ç¯„å›²ãƒªãƒŸãƒƒãƒˆãƒ‡ãƒ¼ã‚¿ã‚’å…¥æ‰‹ã™ã‚‹
+  //ƒNƒ‰ƒX“à‚Ì•Ï”‚Ì”ÍˆÍƒŠƒ~ƒbƒgƒf[ƒ^‚ğ“üè‚·‚é
   void getCRANECartesianLimit(Cartesian CartesianLimit);
 
-  //ã‚¯ãƒ©ã‚¹å†…ã®å¤‰æ•°ã®ç¯„å›²ãƒªãƒŸãƒƒãƒˆãƒ‡ãƒ¼ã‚¿ã‚’å…¥æ‰‹ã™ã‚‹
+  //ƒNƒ‰ƒX“à‚Ì•Ï”‚Ì”ÍˆÍƒŠƒ~ƒbƒgƒf[ƒ^‚ğ“üè‚·‚é
   void getCRANEJointLimit(JLimit JointLimit[]);
 
   
-  // CRANE+ã«é–¢ã™ã‚‹é–¢æ•°
-  //Dynamixelã®Write_Dataã§ã‚µãƒ¼ãƒœãƒ¢ãƒ¼ã‚¿ãƒ¼ã®ãƒˆãƒ«ã‚¯ã®OnOffã‚’ã™ã‚‹
+  // CRANE+‚ÉŠÖ‚·‚éŠÖ”
+  //Dynamixel‚ÌWrite_Data‚ÅƒT[ƒ{ƒ‚[ƒ^[‚Ìƒgƒ‹ƒN‚ÌOnOff‚ğ‚·‚é
   void ServoOnOff(int torque);
 
-  //Dynamixelã®RegWrite-Actionã§Writedata[]ã«æ›¸ãè¾¼ã¾ã‚ŒãŸãƒ‡ãƒ¼ã‚¿ã‚’Dynamixelã«é€ä¿¡ã™ã‚‹
+  //Dynamixel‚ÌRegWrite-Action‚ÅWritedata[]‚É‘‚«‚Ü‚ê‚½ƒf[ƒ^‚ğDynamixel‚É‘—M‚·‚é
   void ArmAction();
 
-  //CRANEã®ãƒãƒ³ãƒ‰ã‚’é–‰ã˜ã‚‹
+  //CRANE‚Ìƒnƒ“ƒh‚ğ•Â‚¶‚é
   void CRANEcloseGripper();
 
-  //CRANEã®ãƒãƒ³ãƒ‰ã‚’é–‹ã
+  //CRANE‚Ìƒnƒ“ƒh‚ğŠJ‚­
   void CRANEopenGripper();
 
-  //CRANEã®ãƒãƒ³ãƒ‰æŒ‡å®šã—ãŸé–‹åº¦ã§ã‚’é–‹ã
+  //CRANE‚Ìƒnƒ“ƒhw’è‚µ‚½ŠJ“x‚Å‚ğŠJ‚­
   void CRANEmoveGripper(double angleRatio);
 
-  //Catesianã‚½ãƒ•ãƒˆãƒªãƒŸãƒƒãƒˆã®åˆ¤å®šã‚’è¡Œã†
+  //Catesianƒ\ƒtƒgƒŠƒ~ƒbƒg‚Ì”»’è‚ğs‚¤
   int CartesianLimitJudgement( double x , double y , double z );
 
-  //Jointã‚½ãƒ•ãƒˆãƒªãƒŸãƒƒãƒˆã®åˆ¤å®šã‚’è¡Œã†
+  //Jointƒ\ƒtƒgƒŠƒ~ƒbƒg‚Ì”»’è‚ğs‚¤
   int JointLimitJudgement();
 
-  //CRANE+ãƒªãƒŸãƒƒãƒˆã®åˆ¤å®šã‚’è¡Œã†
+  //CRANE+ƒŠƒ~ƒbƒg‚Ì”»’è‚ğs‚¤
   int CRANELimitJudgement(double x, double y, double z);
 
-  //ã‚¢ãƒ¼ãƒ ã®é€†é‹å‹•å­¦ã‚’è¨ˆç®—ã™ã‚‹
+  //ƒA[ƒ€‚Ì‹t‰^“®Šw‚ğŒvZ‚·‚é
   void kinematics(double x, double y, double z, double JointPos[]);
 
 
 
-/********* é–¢æ•°ã®ãƒ—ãƒ­ãƒˆã‚¿ã‚¤ãƒ—å®£è¨€ã®çµ‚äº† *********/
+/********* ŠÖ”‚Ìƒvƒƒgƒ^ƒCƒvéŒ¾‚ÌI—¹ *********/
  
 };
 
-/**************** extern å®£è¨€ *****************/
+/**************** extern éŒ¾ *****************/
 extern Craneplus crane;
 
-#endif//__DEFRETURNID_H__
+#endif//__Craneplus_H__

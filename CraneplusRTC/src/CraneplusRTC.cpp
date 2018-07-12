@@ -113,22 +113,25 @@ RTC::ReturnCode_t CraneplusRTC::onShutdown(RTC::UniqueId ec_id)
 
 RTC::ReturnCode_t CraneplusRTC::onActivated(RTC::UniqueId ec_id)
 {
-  if(!crane.OpenCOMDevice(m_port_name.c_str()))
-    {
-      std::cout << "OpenCOMDevice Error!" << std::endl;
-    }
+	if (!crane.OpenCOMDevice(m_port_name.c_str()))
+	{
+		std::cout << "OpenCOMDevice Error!" << std::endl;
+	}
 
-  crane.initArm();
-  std::cout << "initArm" << std::endl << std::endl;
-  return RTC::RTC_OK;
+	crane.initArm();
+	std::cout << "initArm" << std::endl;
+	//ƒT[ƒ{ON
+	std::cout << "Servo ON" << std::endl << std::endl;
+	crane.ServoOnOff(1);
+    return RTC::RTC_OK;
 }
 
 
 RTC::ReturnCode_t CraneplusRTC::onDeactivated(RTC::UniqueId ec_id)
 {
-  crane.ServoOnOff(0);
-  crane.CloseCOMDevice();
-  return RTC::RTC_OK;
+	crane.ServoOnOff(0);
+	crane.CloseCOMDevice();
+    return RTC::RTC_OK;
 }
 
 

@@ -29,164 +29,167 @@ JARA_ARM_ManipulatorCommonInterface_CommonSVC_impl::~JARA_ARM_ManipulatorCommonI
  */
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_CommonSVC_impl::clearAlarms()
 {
-  std::cout << "ClearAlarms" << std::endl;
-  std::cout << "ERROR : ã‚³ãƒžãƒ³ãƒ‰æœªå®Ÿè£…" << std::endl << std::endl;
-  
-  return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED,"æœªå®Ÿè£…ã®ã‚³ãƒžãƒ³ãƒ‰");
+	std::cout << "ClearAlarms" << std::endl;
+	std::cout << "ERROR : ƒRƒ}ƒ“ƒh–¢ŽÀ‘•" << std::endl << std::endl;
+
+	return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED, "–¢ŽÀ‘•‚ÌƒRƒ}ƒ“ƒh");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_CommonSVC_impl::getActiveAlarm(JARA_ARM::AlarmSeq_out alarms)
 {
-  alarms=new JARA_ARM::AlarmSeq;
-  alarms->length(3);
-  std::cout << "GetActiveAlarm" << std::endl;
-  std::cout << "ERROR : ã‚³ãƒžãƒ³ãƒ‰æœªå®Ÿè£…" << std::endl << std::endl;
+	alarms = new JARA_ARM::AlarmSeq;
+	alarms->length(3);
+	std::cout << "GetActiveAlarm" << std::endl;
+	std::cout << "ERROR : ƒRƒ}ƒ“ƒh–¢ŽÀ‘•" << std::endl << std::endl;
 
-  return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED,"æœªå®Ÿè£…ã®ã‚³ãƒžãƒ³ãƒ‰");
+	return RETURN_CODE(JARA_ARM::NOT_IMPLEMENTED, "–¢ŽÀ‘•‚ÌƒRƒ}ƒ“ƒh");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_CommonSVC_impl::getFeedbackPosJoint(JARA_ARM::JointPos_out pos)
 {
-  std::cout << "GetFeedbackPosJoint" << std::endl;
+	std::cout << "GetFeedbackPosJoint" << std::endl;
 
-  double CRANEJointPos[ARM_FREEDOM-1];
-  pos = new JARA_ARM::JointPos;
-  pos->length(ARM_FREEDOM);
+	double CRANEJointPos[ARM_FREEDOM - 1];
+	pos = new JARA_ARM::JointPos;
+	pos->length(ARM_FREEDOM - 1);
 
-  crane.getCRANEJointdata(CRANEJointPos);
+	crane.getCRANEJointdata(CRANEJointPos);
 
-  for(int i = 0;i<ARM_FREEDOM;i++)
-    {
-      pos[i] = CRANEJointPos[i];
-      if(i!=4)//ã‚°ãƒªãƒƒãƒ‘ã¯è¡¨ç¤ºã—ãªã„
-	std::cout << "pos["<<i<<"] = " << pos[i] << "[Â°]" << std::endl;
-    }
-  
-  std::cout << "Success" << std::endl << std::endl;
-  return RETURN_CODE(JARA_ARM::OK,"ã‚ªãƒšãƒ¬ãƒ¼ã‚·ãƒ§ãƒ³ã‚’æ­£å¸¸ã«å—ã‘ä»˜ã‘");
+	for (int i = 0; i<ARM_FREEDOM; i++)
+	{
+		(*pos)[i] = CRANEJointPos[i];
+		if (i != 4)//ƒOƒŠƒbƒp‚Í•\Ž¦‚µ‚È‚¢
+			std::cout << "pos[" << i << "] = " << (*pos)[i] << "[‹]" << std::endl;
+	}
+
+	std::cout << "Success" << std::endl << std::endl;
+	return RETURN_CODE(JARA_ARM::OK, "ƒIƒyƒŒ[ƒVƒ‡ƒ“‚ð³í‚ÉŽó‚¯•t‚¯");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_CommonSVC_impl::getManipInfo(JARA_ARM::ManipInfo_out mInfo)
 {
-  std::cout << "GetManipInfo" << std::endl;
-  
-  mInfo = new JARA_ARM::ManipInfo;
-  mInfo->manufactur = "Hardwareï¼šRT CORPORATION  Softwareï¼šMeijo University robot systems design laboratory";
-  mInfo->type = "CRANE+";
-  mInfo->cmdCycle = 30;
-  mInfo->axisNum = 4;
-  mInfo->isGripper = true;
-  
-  
-  std::cout << " manufactur : " << mInfo->manufactur << std::endl;
-  std::cout << " type       : " << mInfo->type << std::endl;
-  std::cout << " axisNum    : " << mInfo->axisNum << std::endl;
-  std::cout << " cmdCycle   : " << mInfo->cmdCycle << std::endl;
-  std::cout << " isGripper  : " << mInfo->isGripper << std::endl;
-  
-  std::cout << "Success" << std::endl << std::endl;
-  
-  return RETURN_CODE(JARA_ARM::OK,"ã‚ªãƒšãƒ¬ãƒ¼ã‚·ãƒ§ãƒ³ã‚’æ­£å¸¸ã«å—ã‘ä»˜ã‘");
+	std::cout << "GetManipInfo" << std::endl;
+
+	mInfo = new JARA_ARM::ManipInfo;
+	mInfo->manufactur = "HardwareFRT CORPORATION  SoftwareFMeijo University robot systems design laboratory";
+	mInfo->type = "CRANE+";
+	mInfo->cmdCycle = 30;
+	mInfo->axisNum = 4;
+	mInfo->isGripper = true;
+
+
+	std::cout << " manufactur : " << mInfo->manufactur << std::endl;
+	std::cout << " type       : " << mInfo->type << std::endl;
+	std::cout << " axisNum    : " << mInfo->axisNum << std::endl;
+	std::cout << " cmdCycle   : " << mInfo->cmdCycle << std::endl;
+	std::cout << " isGripper  : " << mInfo->isGripper << std::endl;
+
+	std::cout << "Success" << std::endl << std::endl;
+
+	return RETURN_CODE(JARA_ARM::OK, "ƒIƒyƒŒ[ƒVƒ‡ƒ“‚ð³í‚ÉŽó‚¯•t‚¯");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_CommonSVC_impl::getSoftLimitJoint(JARA_ARM::LimitSeq_out softLimit)
 {
-  std::cout<<"getSoftLimitJoint"<<std::endl;
-  
-  JLimit JointLimit[ARM_FREEDOM-1];
-  softLimit=new JARA_ARM::LimitSeq;
-  softLimit->length(ARM_FREEDOM);
-  
-  for(int i=0;i<ARM_FREEDOM-1;i++){
-   crane.getCRANEJointLimit(JointLimit);
-  }
+	std::cout << "getSoftLimitJoint" << std::endl;
 
-  for(int i=0;i<=3;i++){
-    std::cout << "JointLimit["<<i<<"].Upper =" << JointLimit[i].Upper << std::endl; 
-    std::cout << "JointLimit["<<i<<"].Lower =" << JointLimit[i].Lower << std::endl;  
-  }
+	JLimit JointLimit[ARM_FREEDOM - 1];
+	softLimit = new JARA_ARM::LimitSeq;
+	softLimit->length(ARM_FREEDOM);
 
-  (*softLimit)[0].upper=(double)JointLimit[0].Upper;
-  (*softLimit)[0].lower=(double)JointLimit[0].Lower;
-  (*softLimit)[1].upper=(double)JointLimit[1].Upper;
-  (*softLimit)[1].lower=(double)JointLimit[1].Lower;
-  (*softLimit)[2].upper=(double)JointLimit[2].Upper;
-  (*softLimit)[2].lower=(double)JointLimit[2].Lower;
-  (*softLimit)[3].upper=(double)JointLimit[3].Upper;
-  (*softLimit)[3].lower=(double)JointLimit[3].Lower;
-  
-  
-  std::cout<<"Success"<<std::endl<<std::endl;
+	for (int i = 0; i<ARM_FREEDOM - 1; i++){
+		crane.getCRANEJointLimit(JointLimit);
+	}
 
-  return RETURN_CODE(JARA_ARM::OK,"ã‚ªãƒšãƒ¬ãƒ¼ã‚·ãƒ§ãƒ³ã‚’æ­£å¸¸ã«å—ã‘ä»˜ã‘");
+	for (int i = 0; i <= 3; i++){
+		std::cout << "JointLimit[" << i << "].Upper =" << JointLimit[i].Upper << std::endl;
+		std::cout << "JointLimit[" << i << "].Lower =" << JointLimit[i].Lower << std::endl;
+	}
+
+	(*softLimit)[0].upper = (double)JointLimit[0].Upper;
+	(*softLimit)[0].lower = (double)JointLimit[0].Lower;
+	(*softLimit)[1].upper = (double)JointLimit[1].Upper;
+	(*softLimit)[1].lower = (double)JointLimit[1].Lower;
+	(*softLimit)[2].upper = (double)JointLimit[2].Upper;
+	(*softLimit)[2].lower = (double)JointLimit[2].Lower;
+	(*softLimit)[3].upper = (double)JointLimit[3].Upper;
+	(*softLimit)[3].lower = (double)JointLimit[3].Lower;
+
+
+	std::cout << "Success" << std::endl << std::endl;
+
+	return RETURN_CODE(JARA_ARM::OK, "ƒIƒyƒŒ[ƒVƒ‡ƒ“‚ð³í‚ÉŽó‚¯•t‚¯");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_CommonSVC_impl::getState(JARA_ARM::ULONG& state)
 {
-  std::cout << "getState" << std::endl;
-  std::cout << "ã‚³ãƒžãƒ³ãƒ‰æœªå®Ÿè£…" << std::endl << std::endl;
+	std::cout << "getState" << std::endl;
+	std::cout << "ƒRƒ}ƒ“ƒh–¢ŽÀ‘•" << std::endl << std::endl;
 
-  return RETURN_CODE(JARA_ARM::OK,"ã‚ªãƒšãƒ¬ãƒ¼ã‚·ãƒ§ãƒ³ã‚’æ­£å¸¸ã«å—ã‘ä»˜ã‘");
+	return RETURN_CODE(JARA_ARM::OK, "ƒIƒyƒŒ[ƒVƒ‡ƒ“‚ð³í‚ÉŽó‚¯•t‚¯");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_CommonSVC_impl::servoOFF()
 {
 
-  int torque = 0;
-  std::cout<<"ServoOFF (SERVO_OFF)"<<std::endl;  
-  
-  crane.ServoOnOff(torque);
-  
-  std::cout<<"Success"<<std::endl<<std::endl;
+	int torque = 0;
+	std::cout << "ServoOFF (SERVO_OFF)" << std::endl;
 
-  return RETURN_CODE(JARA_ARM::OK,"ã‚ªãƒšãƒ¬ãƒ¼ã‚·ãƒ§ãƒ³ã‚’æ­£å¸¸ã«å—ã‘ä»˜ã‘");
+	crane.ServoOnOff(torque);
+
+	std::cout << "Success" << std::endl << std::endl;
+
+	return RETURN_CODE(JARA_ARM::OK, "ƒIƒyƒŒ[ƒVƒ‡ƒ“‚ð³í‚ÉŽó‚¯•t‚¯");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_CommonSVC_impl::servoON()
 {
 
-  int torque = 1;
-  std::cout<<"ServoON (SERVO_ON)"<<std::endl;
+	int torque = 1;
+	std::cout << "ServoON (SERVO_ON)" << std::endl;
 
-  crane.ServoOnOff(torque);
-  
-  std::cout<<"Success"<<std::endl<<std::endl;
+	crane.ServoOnOff(torque);
 
-  return RETURN_CODE(JARA_ARM::OK,"ã‚ªãƒšãƒ¬ãƒ¼ã‚·ãƒ§ãƒ³ã‚’æ­£å¸¸ã«å—ã‘ä»˜ã‘");
+	std::cout << "Success" << std::endl << std::endl;
+
+	return RETURN_CODE(JARA_ARM::OK, "ƒIƒyƒŒ[ƒVƒ‡ƒ“‚ð³í‚ÉŽó‚¯•t‚¯");
 }
 
 JARA_ARM::RETURN_ID* JARA_ARM_ManipulatorCommonInterface_CommonSVC_impl::setSoftLimitJoint(const JARA_ARM::LimitSeq& softLimit)
 {
 
-  JLimit JointLimit[ARM_FREEDOM-1];
+	JLimit JointLimit[ARM_FREEDOM - 1];
 
-  std::cout<<"SetSoftLimitJoint"<<std::endl;
+	std::cout << "SetSoftLimitJoint" << std::endl;
 
-  if((Angle1_LimitMax>=softLimit[0].upper)&&
-     (Angle1_LimitMin<=softLimit[0].lower)&&
-     (Angle2_LimitMax>=softLimit[1].upper)&&
-     (Angle2_LimitMin<=softLimit[1].lower)&&
-     (Angle3_LimitMax>=softLimit[2].upper)&&
-     (Angle3_LimitMin<=softLimit[2].lower)&&
-     (Angle4_LimitMax>=softLimit[3].upper)&&
-     (Angle4_LimitMin<=softLimit[3].lower))
-    {   
-      for(int i=0;i<ARM_FREEDOM-1;i++){
-        JointLimit[i].Upper = softLimit[i].upper;
-	JointLimit[i].Lower = softLimit[i].lower;
-      }	
-      crane.setCRANEJointLimit(JointLimit); 
-    }
-  else 
-    {
-      std::cout<<"ERROR : Wrong Value"<<std::endl<<std::endl;
-      return RETURN_CODE(JARA_ARM::VALUE_ERR,"å¼•æ•°ãŒä¸æ­£");
-    }
+	if ((Angle1_LimitMax >= softLimit[0].upper) &&
+		(Angle1_LimitMin <= softLimit[0].lower) &&
+		(Angle2_LimitMax >= softLimit[1].upper) &&
+		(Angle2_LimitMin <= softLimit[1].lower) &&
+		(Angle3_LimitMax >= softLimit[2].upper) &&
+		(Angle3_LimitMin <= softLimit[2].lower) &&
+		(Angle4_LimitMax >= softLimit[3].upper) &&
+		(Angle4_LimitMin <= softLimit[3].lower))
+	{
+		for (int i = 0; i<ARM_FREEDOM - 1; i++){
+			JointLimit[i].Upper = softLimit[i].upper;
+			JointLimit[i].Lower = softLimit[i].lower;
+		}
+		crane.setCRANEJointLimit(JointLimit);
+	}
+	else
+	{
+		std::cout << "ERROR : Wrong Value" << std::endl << std::endl;
+		return RETURN_CODE(JARA_ARM::VALUE_ERR, "ˆø”‚ª•s³");
+	}
 
-  std::cout<<"Success"<<std::endl<<std::endl;  
+	std::cout << "Success" << std::endl << std::endl;
 
-  return RETURN_CODE(JARA_ARM::OK,"ã‚ªãƒšãƒ¬ãƒ¼ã‚·ãƒ§ãƒ³ã‚’æ­£å¸¸ã«å—ã‘ä»˜ã‘");
+	return RETURN_CODE(JARA_ARM::OK, "ƒIƒyƒŒ[ƒVƒ‡ƒ“‚ð³í‚ÉŽó‚¯•t‚¯");
 }
+
+
+
 
 
 // End of example implementational code
